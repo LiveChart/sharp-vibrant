@@ -37,7 +37,7 @@ export default class PQueue<T> {
     return this.contents.pop()!;
   }
 
-  size(): number {
+  get size(): number {
     return this.contents.length;
   }
 

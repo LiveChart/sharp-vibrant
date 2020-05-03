@@ -87,17 +87,19 @@ export default class VBox {
     this.#avg = null;
   }
 
-  volume(): number {
+  get volume(): number {
     if (this.#volume < 0) {
       const {
         r1, r2, g1, g2, b1, b2,
       } = this.dimension;
+
       this.#volume = (r2 - r1 + 1) * (g2 - g1 + 1) * (b2 - b1 + 1);
     }
+
     return this.#volume;
   }
 
-  count(): number {
+  get count(): number {
     if (this.#count < 0) {
       const { hist } = this;
       const {
@@ -113,8 +115,10 @@ export default class VBox {
           }
         }
       }
+
       this.#count = c;
     }
+
     return this.#count;
   }
 
@@ -126,7 +130,7 @@ export default class VBox {
     return new VBox(r1, r2, g1, g2, b1, b2, hist);
   }
 
-  avg(): Vec3 {
+  get avg(): Vec3 {
     if (!this.#avg) {
       const { hist } = this;
       const {
@@ -150,6 +154,7 @@ export default class VBox {
           }
         }
       }
+
       if (ntot) {
         this.#avg = [
           ~~(rsum / ntot),
@@ -164,6 +169,7 @@ export default class VBox {
         ];
       }
     }
+
     return this.#avg;
   }
 
@@ -186,9 +192,11 @@ export default class VBox {
     const {
       r1, r2, g1, g2, b1, b2,
     } = this.dimension;
-    const count = this.count();
+    const { count } = this;
+
     if (!count) return [];
     if (count === 1) return [this.clone()];
+
     const rw = r2 - r1 + 1;
     const gw = g2 - g1 + 1;
     const bw = b2 - b1 + 1;
@@ -252,36 +260,41 @@ export default class VBox {
       reverseSum[i] = total - d;
     }
 
-    const vbox = this;
+    return this.doCut(maxd, splitPoint, accSum, reverseSum);
+  }
 
-    function doCut(d: string): VBox[] {
-      const dim1 = `${d}1`;
-      const dim2 = `${d}2`;
-      const d1 = vbox.dimension[dim1];
-      let d2 = vbox.dimension[dim2];
-      const vbox1 = vbox.clone();
-      const vbox2 = vbox.clone();
-      const left = splitPoint - d1;
-      const right = d2 - splitPoint;
-      if (left <= right) {
-        d2 = Math.min(d2 - 1, ~~(splitPoint + right / 2));
-        d2 = Math.max(0, d2);
-      } else {
-        d2 = Math.max(d1, ~~(splitPoint - 1 - left / 2));
-        d2 = Math.min(vbox.dimension[dim2], d2);
-      }
+  private doCut(
+    d: string,
+    splitPoint: number,
+    accSum: Uint32Array,
+    reverseSum: Uint32Array,
+  ): VBox[] {
+    const dim1 = `${d}1`;
+    const dim2 = `${d}2`;
+    const d1 = this.dimension[dim1];
+    let d2 = this.dimension[dim2];
+    const vbox1 = this.clone();
+    const vbox2 = this.clone();
+    const left = splitPoint - d1;
+    const right = d2 - splitPoint;
 
-      while (!accSum![d2]) d2 += 1;
-
-      let c2 = reverseSum[d2];
-      while (!c2 && accSum![d2 - 1]) c2 = reverseSum[d2 -= 1];
-
-      vbox1.dimension[dim2] = d2;
-      vbox2.dimension[dim1] = d2 + 1;
-
-      return [vbox1, vbox2];
+    if (left <= right) {
+      d2 = Math.min(d2 - 1, ~~(splitPoint + right / 2));
+      d2 = Math.max(0, d2);
+    } else {
+      d2 = Math.max(d1, ~~(splitPoint - 1 - left / 2));
+      d2 = Math.min(this.dimension[dim2], d2);
     }
 
-    return doCut(maxd);
+    while (!accSum![d2]) d2 += 1;
+
+    let c2 = reverseSum[d2];
+
+    while (!c2 && accSum![d2 - 1]) c2 = reverseSum[d2 -= 1];
+
+    vbox1.dimension[dim2] = d2;
+    vbox2.dimension[dim1] = d2 + 1;
+
+    return [vbox1, vbox2];
   }
 }
