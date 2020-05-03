@@ -103,6 +103,7 @@ export function hslToRgb(h: number, s: number, l: number): Vec3 {
   let b: number = l;
 
   if (s !== 0) {
+    // non-achromatic
     const q = l < 0.5 ? l * (1 + s) : l + s - (l * s);
     const p = 2 * l - q;
 
@@ -112,9 +113,9 @@ export function hslToRgb(h: number, s: number, l: number): Vec3 {
   }
 
   return [
-    r * 255,
-    g * 255,
-    b * 255,
+    r * 255 | 0,
+    g * 255 | 0,
+    b * 255 | 0,
   ];
 }
 
