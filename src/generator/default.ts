@@ -258,11 +258,11 @@ function generateEmptySwatches(
   }
 }
 
-const DefaultGenerator: Generator = (
+const DefaultGenerator: Generator<DefaultGeneratorOptions> = (
   swatches: Array<Swatch>,
   opts?: DefaultGeneratorOptions,
 ): Palette => {
-  const optsWithDefaults = <DefaultGeneratorOptions>({ ...DefaultOpts, ...opts });
+  const optsWithDefaults = { ...DefaultOpts, ...opts };
   const maxPopulation = findMaxPopulation(swatches);
 
   const palette = generateVariationColors(swatches, maxPopulation, optsWithDefaults);

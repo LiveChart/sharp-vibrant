@@ -43,8 +43,8 @@ export interface Quantizer {
   (pixels: Pixels, opts: ComputedOptions): Resolvable<Array<Swatch>>
 }
 
-export interface Generator {
-  (swatches: Array<Swatch>, opts?: any): Resolvable<Palette>
+export interface Generator<T> {
+  (swatches: Array<Swatch>, opts?: T): Resolvable<Palette>
 }
 
 export interface Options {
@@ -54,7 +54,7 @@ export interface Options {
   filters: Array<Filter>
   ImageClass: ImageClass
   quantizer: Quantizer
-  generator?: Generator
+  generator?: Generator<any>
 }
 
 export interface ComputedOptions extends Options {
