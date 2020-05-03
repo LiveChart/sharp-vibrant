@@ -17,8 +17,6 @@ import * as Quantizer from './quantizer'
 import * as Generator from './generator'
 import * as Filters from './filter'
 
-import defaults = require('lodash/defaults')
-
 class Vibrant {
   static Builder = Builder
   static Quantizer = Quantizer
@@ -43,7 +41,7 @@ class Vibrant {
   opts: ComputedOptions
   private _palette: Palette
   constructor(private _src: ImageSource, opts?: Partial<Options>) {
-    this.opts = <ComputedOptions>defaults({}, opts, Vibrant.DefaultOpts)
+    this.opts = <ComputedOptions>Object.assign({}, Vibrant.DefaultOpts, opts)
     this.opts.combinedFilter = Filters.combineFilters(this.opts.filters)!
   }
   private _process(image: Image, opts: ComputedOptions): Promise<Palette> {

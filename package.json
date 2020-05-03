@@ -1,20 +1,17 @@
 {
   "name": "node-vibrant",
   "version": "3.1.5",
-  "description": "Extract prominent colors from an image. Supports both node and browser environment.",
+  "description": "Extract prominent colors from an image in a node environment.",
   "main": "lib/index.js",
-  "browser": "lib/browser.js",
   "types": "lib/index.d.ts",
   "directories": {
     "example": "examples"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.53",
-    "@types/node": "^10.11.7",
     "@jimp/custom": "^0.9.3",
-    "@jimp/types": "^0.9.3",
     "@jimp/plugin-resize": "^0.9.3",
-    "lodash": "^4.17.4",
+    "@jimp/types": "^0.9.3",
+    "@types/node": "^10.11.7",
     "url": "^0.11.0"
   },
   "devDependencies": {
@@ -23,6 +20,8 @@
     "@types/mocha": "^5.2.5",
     "@types/serve-static": "^1.7.31",
     "@types/table": "^4.0.1",
+    "@types/lodash": "^4.14.53",
+    "lodash": "^4.17.4",
     "chai": "^4.1.2",
     "eslint-plugin-typescript": "^0.14.0",
     "finalhandler": "^1.0.0",
@@ -35,22 +34,16 @@
     "ts-node": "^7.0.1",
     "typescript": "^3.6.3",
     "typescript-eslint-parser": "^21.0.2",
-    "uglifyjs-webpack-plugin": "^2.0.1",
-    "webpack": "^4.20.2",
-    "webpack-cli": "^3.1.2",
-    "worker-loader": "^2.0.0"
+    "uglifyjs-webpack-plugin": "^2.0.1"
   },
   "scripts": {
-    "clean": "yarn run clean:browser && yarn run clean:node",
-    "clean:browser": "rimraf dist",
+    "clean": "yarn run clean:node",
     "clean:node": "rimraf lib",
     "lint": "standardx src/**/*.ts",
-    "build": "yarn run build:browser && yarn run build:node",
-    "build:browser": "webpack --config webpack.config.js",
+    "build": "yarn run build:node",
     "build:node": "tsc",
-    "test": "yarn run test:node && yarn run test:browser",
+    "test": "yarn run test:node",
     "test:node": "mocha --require ts-node/register src/test/**/*.spec.ts",
-    "test:browser": "cd fixtures/browser; yarn run test",
     "sample:inspect": "cd fixtures/sample; yarn run start",
     "sample:update": "cd fixtures/sample; yarn run update",
     "prepublishOnly": "yarn run lint && yarn run clean && yarn run build"

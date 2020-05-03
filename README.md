@@ -7,7 +7,7 @@ Extract prominent colors from an image.
 
 This project is refactored into a monorepo in version 3.2.0 (see [develop](https://github.com/akfish/node-vibrant/tree/develop) branch, npm version `node-vibrant@3.2.0-alpha`).
 
-We will not merge new PRs to v3.1 related to new featuresets during this time. However, bug fixes and security vulnerability fixes are still highly encouraged. 
+We will not merge new PRs to v3.1 related to new featuresets during this time. However, bug fixes and security vulnerability fixes are still highly encouraged.
 
 ## New WebWorker support in v3.0
 
@@ -23,8 +23,6 @@ Here's how to use this feature:
    ```
 
 ## Features
-- Identical API for both node.js and browser environment
-- Support browserify/webpack
 - Consistent results (*See [Result Consistency](#result-consistency))
 
 ## Install
@@ -34,7 +32,7 @@ $ npm install node-vibrant
 ```
 
 ## Usage
-### node.js / browserify
+### node.js
 
 ```js
 // ES5
@@ -55,29 +53,6 @@ let v = new Vibrant('path/to/image', opts)
 v.getPalette((err, palette) => console.log(palette))
 // Promise
 v.getPalette().then((palette) => console.log(palette))
-```
-
-### Browser
-
-If you installed node-vibrant with `npm`, compiled bundles are available under `node_modules/node-vibrant/dist`.
-Or you can download bundles from [Relases](https://github.com/akfish/node-vibrant/releases).
-
-```html
-<!-- Debug version -->
-<script src="/path/to/dist/vibrant.js"></script>
-<!-- Uglified version -->
-<script src="/path/to/dist/vibrant.min.js"></script>
-
-<script>
-  // Use `Vibrant` in script
-  // Vibrant is exported to global. window.Vibrant === Vibrant
-  Vibrant.from('path/to/image').getPalette(function(err, palette) {});
-  // Promise
-  Vibrant.from('path/to/image').getPalette().then(function(palette) {});
-  // Or
-  var v = new Vibrant('/path/to/image', opts);
-  // ... same as in node.js
-</script>
 ```
 
 ## Contribution Guidelines
@@ -105,7 +80,6 @@ Name    |  Description
 
 ```ts
 export type ImageSource = string
-  | HTMLImageElement  // Browser only
   | Buffer            // Node.js only
 ```
 
@@ -129,7 +103,7 @@ Field          | Default                         | Description
 `quality`      | 5                               | Scale down factor used in downsampling stage. `1` means no downsampling. If `maxDimension` is set, this value will not be used.
 `maxDimension` | `undefined`                     | The max size of the image's longer side used in downsampling stage. This field will override `quality`.
 `filters`      | `[]`                            | An array of filters
-`ImageClass`   | `Image.Node` or `Image.Browser` | An `Image` implementation class
+`ImageClass`   | `Image.Node`                    | An `Image` implementation class
 `quantizer`    | `Vibrant.Quantizer.MMCQ`        | A `Quantizer` implementation class
 `generator`    | `Vibrant.Generator.Default`     | An `Generator` instance
 
@@ -300,13 +274,10 @@ Delta E  | Perception                             | Returns
 
 Task            | Description
 --------------- | --------------------------------------
-`build:browser` | Build browser target
 `build:node`    | Build node.js target
 `build`         | Build all targets
-`clean:browser` | Clean browser build
 `clean:node`    | Clean node.js build
 `clean`         | Clean all builds
-`test:browser`  | Run browser specs (karma)
 `test:node`     | Run node.js specs (mocha)
 `test`          | Run all specs
 
@@ -316,10 +287,3 @@ Task            | Description
 - `node-vibrant` provides asynchronous API since most node.js image processing library is asynchronous. And the original `vibrant.js` workflow is asynchronous any way (though you will have to handle the image loading yourself, while `node-vibrant` does it for you).
 - `node-vibrant` uses one single `opts` object to hold all options for future expansions. And it feels more node.js-like.
 - `node-vibrant` uses method call to initiate image processing instead of constructor so that developers can use it with `Promise`.
-
-### Result Consistency
-The results is consistent within each user's browser instance regardelss of visible region or display size of the image, unlike the original `vibrant.js` implementation.
-
-However, due to the very nature of HTML5 canvas element, image rendering is platform/machine-dependent. Thus the resulting swatches in browser environment varies and may not be the same as in node.js nor in another machine. See [Canvas Fingerprinting](https://en.wikipedia.org/wiki/Canvas_fingerprinting).
-
-The test specs use CIE delta E 1994 color difference to measure inconsistencies across platforms. It compares the generated color on node.js, Chrome, Firefox and IE11. At `quality` == 1 (no downsampling) and no filters, the results are rather consistent. Color diffs between browsers are mostly not perceptible by human eyes. Downsampling _will_ cause perceptible inconsistent results across browsers due to differences in canvas implementations.

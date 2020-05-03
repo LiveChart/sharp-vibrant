@@ -2,10 +2,8 @@
 import { expect } from 'chai'
 import { VibrantStatic } from '../../typing'
 import Builder from '../../builder'
-import path = require('path')
 import { Palette, Swatch } from '../../color'
 import util = require('../../util')
-import _ = require('lodash')
 import {
   TestSample, SamplePathKey
 } from './data'

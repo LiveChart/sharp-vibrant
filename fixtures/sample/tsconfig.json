@@ -13,7 +13,6 @@
             "es2015.promise"
         ],
         "paths": {
-            "node-vibrant": ["src/browser.worker"],
             "node-vibrant/lib/*": ["src/*"]
         }
     },
