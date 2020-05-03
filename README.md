@@ -1,34 +1,19 @@
-# node-vibrant
-[![Build Status](https://travis-ci.org/akfish/node-vibrant.svg?branch=master)](https://travis-ci.org/akfish/node-vibrant)
+# sharp-vibrant
 
-Extract prominent colors from an image.
+Extract prominent colors from an image in nodejs using [sharp](https://sharp.pixelplumbing.com/) for image loading/processing.
 
-## ** NOTICE **
-
-This project is refactored into a monorepo in version 3.2.0 (see [develop](https://github.com/akfish/node-vibrant/tree/develop) branch, npm version `node-vibrant@3.2.0-alpha`).
-
-We will not merge new PRs to v3.1 related to new featuresets during this time. However, bug fixes and security vulnerability fixes are still highly encouraged.
-
-
-## Features
-- Consistent results (*See [Result Consistency](#result-consistency))
-
-## Install
-
-```bash
-$ npm install node-vibrant
-```
+This is a fork of [node-vibrant](https://github.com/Vibrant-Colors/node-vibrant) that reduces dependencies/complexity at the cost of absolutely no browser support. This fork was created for internal use and is not published to any package manager.
 
 ## Usage
 ### node.js
 
 ```js
 // ES5
-var Vibrant = require('node-vibrant')
+var Vibrant = require('sharp-vibrant')
 // ES6
-import * as Vibrant from 'node-vibrant'
+import * as Vibrant from '@livechart/sharp-vibrant'
 // TypeScript
-import Vibrant = require('node-vibrant')
+import Vibrant = require('@livechart/sharp-vibrant')
 
 // Using builder
 Vibrant.from('path/to/image').getPalette((err, palette) => console.log(palette))
@@ -52,7 +37,7 @@ v.getPalette().then((palette) => console.log(palette))
 ## References
 
 ### `Vibrant`
-Main class of `node-vibrant`.
+Main class of `sharp-vibrant`.
 
 #### `Vibrant.from(src: ImageSource): Builder`
 Make a `Builder` for an image. Returns a `Builder` instance.
@@ -67,8 +52,7 @@ Name    |  Description
 ##### `ImageSource`
 
 ```ts
-export type ImageSource = string
-  | Buffer            // Node.js only
+export type ImageSource = string | Buffer
 ```
 
 ##### `Options`
@@ -116,7 +100,6 @@ export interface Generator {
     (swatches: Array<Swatch>, opts?: Object): Resolvable<Palette>
 }
 ```
-
 
 ##### `Filter`
 
@@ -268,10 +251,3 @@ Task            | Description
 `clean`         | Clean all builds
 `test:node`     | Run node.js specs (mocha)
 `test`          | Run all specs
-
-## Notes
-### Intentional Deviation From `vibrant.js`
-- `node-vibrant` takes image path, not the image object as parameter for the obvious reason that node.js environment has no access to HTML DOM object.
-- `node-vibrant` provides asynchronous API since most node.js image processing library is asynchronous. And the original `vibrant.js` workflow is asynchronous any way (though you will have to handle the image loading yourself, while `node-vibrant` does it for you).
-- `node-vibrant` uses one single `opts` object to hold all options for future expansions. And it feels more node.js-like.
-- `node-vibrant` uses method call to initiate image processing instead of constructor so that developers can use it with `Promise`.

@@ -1,12 +1,9 @@
 {
-  "name": "node-vibrant",
-  "version": "3.1.5",
-  "description": "Extract prominent colors from an image in a node environment.",
+  "name": "@livechart/sharp-vibrant",
+  "version": "0.1.0",
+  "description": "Extract prominent colors from an image in a node environment using sharp.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "directories": {
-    "example": "examples"
-  },
   "dependencies": {
     "@types/node": "^10.11.7",
     "@types/sharp": "^0.25.0",
@@ -48,7 +45,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/akfish/node-vibrant.git"
+    "url": "https://github.com/LiveChart/sharp-vibrant.git"
   },
   "keywords": [
     "color",
@@ -61,6 +58,6 @@
     "muted",
     "colour"
   ],
-  "author": "akfish",
+  "author": "wolfemm",
   "license": "MIT"
 }
