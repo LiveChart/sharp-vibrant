@@ -41,19 +41,19 @@
     "worker-loader": "^2.0.0"
   },
   "scripts": {
-    "clean": "npm run clean:browser && npm run clean:node",
+    "clean": "yarn run clean:browser && yarn run clean:node",
     "clean:browser": "rimraf dist",
     "clean:node": "rimraf lib",
     "lint": "standardx src/**/*.ts",
-    "build": "npm run build:browser && npm run build:node",
+    "build": "yarn run build:browser && yarn run build:node",
     "build:browser": "webpack --config webpack.config.js",
     "build:node": "tsc",
-    "test": "npm run test:node && npm run test:browser",
+    "test": "yarn run test:node && yarn run test:browser",
     "test:node": "mocha --require ts-node/register src/test/**/*.spec.ts",
-    "test:browser": "npm run --prefix fixtures/browser test",
-    "sample:inspect": "npm run --prefix fixtures/sample start",
-    "sample:update": "npm run --prefix fixtures/sample update",
-    "prepublishOnly": "npm run lint && npm run clean && npm run build"
+    "test:browser": "cd fixtures/browser; yarn run test",
+    "sample:inspect": "cd fixtures/sample; yarn run start",
+    "sample:update": "cd fixtures/sample; yarn run update",
+    "prepublishOnly": "yarn run lint && yarn run clean && yarn run build"
   },
   "standardx": {
     "parser": "typescript-eslint-parser",
