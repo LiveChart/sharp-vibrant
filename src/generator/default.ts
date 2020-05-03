@@ -204,56 +204,45 @@ function generateEmptySwatches(
   if (palette.Vibrant === null && palette.DarkVibrant === null && palette.LightVibrant === null) {
     if (palette.DarkVibrant === null && palette.DarkMuted !== null) {
       const [h, s, l] = withLuminance(palette.LightMuted!.hsl, opts.targetDarkLuma);
-      // let [h, s, l] = palette.LightMuted!.hsl;
-      // l = opts.targetDarkLuma;
       palette.DarkVibrant = new Swatch(hslToRgb(h, s, l), 0);
     }
+
     if (palette.LightVibrant === null && palette.LightMuted !== null) {
       const [h, s, l] = withLuminance(palette.LightMuted!.hsl, opts.targetDarkLuma);
-      // let [h, s, l] = palette.LightMuted!.hsl;
-      // l = opts.targetDarkLuma;
       palette.DarkVibrant = new Swatch(hslToRgb(h, s, l), 0);
     }
   }
+
   if (palette.Vibrant === null && palette.DarkVibrant !== null) {
     const [h, s, l] = withLuminance(palette.DarkVibrant!.hsl, opts.targetNormalLuma);
-    // let [h, s, l] = palette.DarkVibrant!.hsl;
-    // l = opts.targetNormalLuma;
     palette.Vibrant = new Swatch(hslToRgb(h, s, l), 0);
   } else if (palette.Vibrant === null && palette.LightVibrant !== null) {
     const [h, s, l] = withLuminance(palette.LightVibrant!.hsl, opts.targetNormalLuma);
-    // let [h, s, l] = palette.LightVibrant!.hsl;
-    // l = opts.targetNormalLuma;
     palette.Vibrant = new Swatch(hslToRgb(h, s, l), 0);
   }
+
   if (palette.DarkVibrant === null && palette.Vibrant !== null) {
     const [h, s, l] = withLuminance(palette.Vibrant!.hsl, opts.targetDarkLuma);
-    // let [h, s, l] = palette.Vibrant!.hsl;
-    // l = opts.targetDarkLuma;
     palette.DarkVibrant = new Swatch(hslToRgb(h, s, l), 0);
   }
+
   if (palette.LightVibrant === null && palette.Vibrant !== null) {
     const [h, s, l] = withLuminance(palette.Vibrant!.hsl, opts.targetLightLuma);
-    // let [h, s, l] = palette.Vibrant!.hsl;
-    // l = opts.targetLightLuma;
     palette.LightVibrant = new Swatch(hslToRgb(h, s, l), 0);
   }
+
   if (palette.Muted === null && palette.Vibrant !== null) {
     const [h, s, l] = withLuminance(palette.Vibrant!.hsl, opts.targetMutesSaturation);
-    // let [h, s, l] = palette.Vibrant!.hsl;
-    // l = opts.targetMutesSaturation;
     palette.Muted = new Swatch(hslToRgb(h, s, l), 0);
   }
+
   if (palette.DarkMuted === null && palette.DarkVibrant !== null) {
     const [h, s, l] = withLuminance(palette.DarkVibrant!.hsl, opts.targetMutesSaturation);
-    // let [h, s, l] = palette.DarkVibrant!.hsl;
-    // l = opts.targetMutesSaturation;
     palette.DarkMuted = new Swatch(hslToRgb(h, s, l), 0);
   }
+
   if (palette.LightMuted === null && palette.LightVibrant !== null) {
     const [h, s, l] = withLuminance(palette.LightVibrant!.hsl, opts.targetMutesSaturation);
-    // let [h, s, l] = palette.LightVibrant!.hsl;
-    // l = opts.targetMutesSaturation;
     palette.LightMuted = new Swatch(hslToRgb(h, s, l), 0);
   }
 }
