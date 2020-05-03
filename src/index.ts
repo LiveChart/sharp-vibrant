@@ -1,6 +1,6 @@
 import Vibrant from './vibrant'
-import NodeImage from './image/node'
+import SharpImage from './image/sharp'
 
-Vibrant.DefaultOpts.ImageClass = NodeImage
+Vibrant.DefaultOpts.ImageClass = SharpImage
 
 export = Vibrant

@@ -47,8 +47,6 @@ class Vibrant {
   private _process(image: Image, opts: ComputedOptions): Promise<Palette> {
     let { quantizer, generator } = opts
 
-    image.scaleDown(opts)
-
     return image.applyFilter(opts.combinedFilter)
       .then((imageData) => quantizer(imageData.data, opts))
       .then((colors) => Swatch.applyFilter(colors, opts.combinedFilter))
@@ -64,7 +62,7 @@ class Vibrant {
 
   getPalette(cb?: Callback<Palette>): Promise<Palette> {
     let image = new this.opts.ImageClass()
-    const result = image.load(this._src)
+    const result = image.load(this._src, this.opts)
       .then((image) => this._process(image, this.opts))
       .then((palette) => {
         this._palette = palette

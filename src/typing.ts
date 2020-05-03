@@ -21,17 +21,13 @@ export interface ImageData {
 }
 
 export interface Image {
-  load(image: ImageSource): Promise<Image>
+  load(image: ImageSource, opts: ComputedOptions): Promise<Image>
   clear(): void
   update(imageData: ImageData): void
-  getWidth(): number
-  getHeight(): number
-  resize(targetWidth: number, targetHeight: number, ratio: number): void
   getPixelCount(): number
   getImageData(): ImageData
   applyFilter(filter: Filter): Promise<ImageData>
   remove(): void
-  scaleDown(opts: Options): void
 }
 
 export type Resolvable<T> = T | Promise<T>
