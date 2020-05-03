@@ -66,10 +66,10 @@ class Vibrant {
       .then((image) => this._process(image, this.opts))
       .then((palette) => {
         this._palette = palette
-        image.remove()
+        image.cleanup()
         return palette
       }, (err) => {
-        image.remove()
+        image.cleanup()
         throw err
       })
     if (cb) result.then((palette) => cb(null!, palette), (err) => cb(err))

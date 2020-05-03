@@ -2,11 +2,10 @@ import { Filter, Image, ImageData, ImageSource, ComputedOptions } from '../typin
 
 export abstract class ImageBase implements Image {
   abstract load(image: ImageSource, opts: ComputedOptions): Promise<ImageBase>
-  abstract clear(): void
   abstract update(imageData: ImageData): void
   abstract getPixelCount(): number
   abstract getImageData(): ImageData
-  abstract remove(): void
+  abstract cleanup(): void
 
   applyFilter (filter: Filter): Promise<ImageData> {
     let imageData = this.getImageData()

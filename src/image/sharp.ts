@@ -30,10 +30,6 @@ export default class SharpImage extends ImageBase {
     return this;
   }
 
-  clear (): void {
-
-  }
-
   update (imageData: ImageData): void {
 
   }
@@ -46,7 +42,7 @@ export default class SharpImage extends ImageBase {
     return this._imageData
   }
 
-  remove (): void {
+  cleanup (): void {
 
   }
 }

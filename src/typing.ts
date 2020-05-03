@@ -22,12 +22,11 @@ export interface ImageData {
 
 export interface Image {
   load(image: ImageSource, opts: ComputedOptions): Promise<Image>
-  clear(): void
   update(imageData: ImageData): void
   getPixelCount(): number
   getImageData(): ImageData
   applyFilter(filter: Filter): Promise<ImageData>
-  remove(): void
+  cleanup(): void
 }
 
 export type Resolvable<T> = T | Promise<T>
