@@ -79,7 +79,7 @@ const paletteCallback = (references: any, sample: TestSample, done: Mocha.Done) 
     })
   }
 
-export const testVibrant = (Vibrant: VibrantStatic, sample: TestSample, pathKey: SamplePathKey, env: 'node' | 'browser', builderCallback: (b: Builder) => Builder = null!) => {
+export const testVibrant = (Vibrant: VibrantStatic, sample: TestSample, pathKey: SamplePathKey, env: 'node', builderCallback: (b: Builder) => Builder = null!) => {
   return (done: Mocha.Done) => {
     let builder = Vibrant.from(sample[pathKey])
       .quality(1)
@@ -91,7 +91,7 @@ export const testVibrant = (Vibrant: VibrantStatic, sample: TestSample, pathKey:
 }
 
 
-export const testVibrantAsPromised = (Vibrant: VibrantStatic, sample: TestSample, pathKey: SamplePathKey, env: 'node' | 'browser', builderCallback: (b: Builder) => Builder = null!) => {
+export const testVibrantAsPromised = (Vibrant: VibrantStatic, sample: TestSample, pathKey: SamplePathKey, env: 'node', builderCallback: (b: Builder) => Builder = null!) => {
   return () => {
     let builder = Vibrant.from(sample[pathKey])
       .quality(1)

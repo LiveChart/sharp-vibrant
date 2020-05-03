@@ -9,18 +9,6 @@ This project is refactored into a monorepo in version 3.2.0 (see [develop](https
 
 We will not merge new PRs to v3.1 related to new featuresets during this time. However, bug fixes and security vulnerability fixes are still highly encouraged.
 
-## New WebWorker support in v3.0
-
-Quantization is the most time-consuming stage in `node-vibrant`. In v3.0, the quantization can be run in the WebWorker to avoid freezing the UI thread.
-
-Here's how to use this feature:
-1. Use WebWorker build `dist/vibrant.worker.js` or `dist/vibrant.worker.min.js`. Or if you are re-bundling with webpack, use `lib/bundle.worker.js` as entry
-2. Use WebWorker quantizer:
-   ```ts
-   let v = Vibrant.from(src)
-     .useQuantizer(Vibrant.Quantizer.WebWorker)
-     // Other configurations
-   ```
 
 ## Features
 - Consistent results (*See [Result Consistency](#result-consistency))

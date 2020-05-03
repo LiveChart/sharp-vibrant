@@ -51,7 +51,6 @@ export interface Options {
   quality: number
   maxDimension: number
   filters: Array<Filter>
-  useWorker: boolean
   ImageClass: ImageClass
   quantizer: Quantizer
   generator?: Generator
