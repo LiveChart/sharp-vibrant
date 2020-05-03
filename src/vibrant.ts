@@ -3,26 +3,31 @@ import type {
   ImageSource,
   Options,
   ComputedOptions,
-  Callback
-} from './typing'
+  Callback,
+} from './typing';
 
-import { Palette, Swatch } from './color'
+import { Palette, Swatch } from './color';
 
-import Builder from './builder'
+import Builder from './builder';
 
-import * as Util from './util'
+import * as Util from './util';
 
-import * as Quantizer from './quantizer'
-import * as Generator from './generator'
-import * as Filters from './filter'
+import * as Quantizer from './quantizer';
+import * as Generator from './generator';
+import * as Filters from './filter';
 
 class Vibrant {
-  static Builder = Builder
-  static Quantizer = Quantizer
-  static Generator = Generator
-  static Filter = Filters
-  static Util = Util
-  static Swatch = Swatch
+  static Builder = Builder;
+
+  static Quantizer = Quantizer;
+
+  static Generator = Generator;
+
+  static Filter = Filters;
+
+  static Util = Util;
+
+  static Swatch = Swatch;
 
   static DefaultOpts: Partial<Options> = {
     colorCount: 64,
@@ -30,50 +35,50 @@ class Vibrant {
     generator: Generator.Default,
     ImageClass: null!,
     quantizer: Quantizer.MMCQ,
-    filters: [Filters.Default]
-  }
+    filters: [Filters.Default],
+  };
 
   static from(src: ImageSource): Builder {
-    return new Builder(src)
+    return new Builder(src);
   }
 
-  opts: ComputedOptions
-  private _palette: Palette
+  opts: ComputedOptions;
+
+  #palette: Palette | null = null;
+
   constructor(private _src: ImageSource, opts?: Partial<Options>) {
-    this.opts = <ComputedOptions>Object.assign({}, Vibrant.DefaultOpts, opts)
-    this.opts.combinedFilter = Filters.combineFilters(this.opts.filters)!
+    this.opts = <ComputedOptions>({ ...Vibrant.DefaultOpts, ...opts });
+    this.opts.combinedFilter = Filters.combineFilters(this.opts.filters)!;
   }
-  private _process(image: Image, opts: ComputedOptions): Promise<Palette> {
-    let { quantizer, generator } = opts
+
+  private process(image: Image, opts: ComputedOptions): Promise<Palette> {
+    const { quantizer, generator } = opts;
 
     return image.applyFilter(opts.combinedFilter)
       .then((imageData) => quantizer(imageData.data, opts))
       .then((colors) => Swatch.applyFilter(colors, opts.combinedFilter))
-      .then((colors) => Promise.resolve(generator!(colors)))
+      .then((colors) => Promise.resolve(generator!(colors)));
   }
 
-  palette(): Palette {
-    return this.swatches()
-  }
-  swatches(): Palette {
-    return this._palette
+  palette(): Palette | null {
+    return this.#palette;
   }
 
   getPalette(cb?: Callback<Palette>): Promise<Palette> {
-    let image = new this.opts.ImageClass()
+    const image = new this.opts.ImageClass();
     const result = image.load(this._src, this.opts)
-      .then((image) => this._process(image, this.opts))
+      .then((image) => this.process(image, this.opts))
       .then((palette) => {
-        this._palette = palette
-        image.cleanup()
-        return palette
+        this.#palette = palette;
+        image.cleanup();
+        return palette;
       }, (err) => {
-        image.cleanup()
-        throw err
-      })
-    if (cb) result.then((palette) => cb(null!, palette), (err) => cb(err))
-    return result
+        image.cleanup();
+        throw err;
+      });
+    if (cb) result.then((palette) => cb(null!, palette), (err) => cb(err));
+    return result;
   }
 }
 
-export default Vibrant
+export default Vibrant;

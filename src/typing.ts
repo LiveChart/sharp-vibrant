@@ -1,5 +1,5 @@
-import { Palette, Swatch } from './color'
-import Builder from './builder'
+import { Palette, Swatch } from './color';
+import Builder from './builder';
 
 export interface VibrantStatic {
   from(src: ImageSource): Builder
@@ -9,11 +9,11 @@ export interface Callback<T> {
   (err?: Error, result?: T): void
 }
 
-export type ImageCallback = Callback<Image>
+export type ImageCallback = Callback<Image>;
 
-export type ImageSource = string | HTMLImageElement | Buffer
+export type ImageSource = string | Buffer;
 
-export type Pixels = Uint8ClampedArray | Buffer
+export type Pixels = Uint8ClampedArray | Buffer;
 export interface ImageData {
   data: Pixels,
   width: number,
@@ -28,7 +28,7 @@ export interface Image {
   cleanup(): void
 }
 
-export type Resolvable<T> = T | Promise<T>
+export type Resolvable<T> = T | Promise<T>;
 
 export interface ImageClass {
   new(): Image
@@ -43,7 +43,7 @@ export interface Quantizer {
 }
 
 export interface Generator {
-  (swatches: Array<Swatch>, opts?: Object): Resolvable<Palette>
+  (swatches: Array<Swatch>, opts?: any): Resolvable<Palette>
 }
 
 export interface Options {

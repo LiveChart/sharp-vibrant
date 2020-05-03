@@ -18,23 +18,26 @@
     "@types/lodash": "^4.14.53",
     "@types/mocha": "^5.2.5",
     "@types/table": "^4.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.30.0",
+    "@typescript-eslint/parser": "^2.30.0",
     "chai": "^4.1.2",
-    "eslint-plugin-typescript": "^0.14.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-airbnb-typescript": "^7.2.1",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-plugin-import": "^2.20.2",
     "lodash": "^4.17.4",
     "mocha": "^5.2.0",
     "rimraf": "^2.6.1",
-    "standardx": "^3.0.1",
     "table": "^5.1.0",
     "ts-loader": "^5.2.1",
     "ts-node": "^7.0.1",
-    "typescript": "^3.6.3",
-    "typescript-eslint-parser": "^21.0.2",
-    "uglifyjs-webpack-plugin": "^2.0.1"
+    "typescript": "^3.6.3"
   },
   "scripts": {
     "clean": "yarn run clean:node",
     "clean:node": "rimraf lib",
-    "lint": "standardx src/**/*.ts",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx --cache ./",
     "build": "yarn run build:node",
     "build:node": "tsc",
     "test": "yarn run test:node",
@@ -42,12 +45,6 @@
     "sample:inspect": "cd fixtures/sample; yarn run start",
     "sample:update": "cd fixtures/sample; yarn run update",
     "prepublishOnly": "yarn run lint && yarn run clean && yarn run build"
-  },
-  "standardx": {
-    "parser": "typescript-eslint-parser",
-    "plugins": [
-      "typescript"
-    ]
   },
   "repository": {
     "type": "git",

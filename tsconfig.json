@@ -1,9 +1,37 @@
 {
-    "extends": "./tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "lib",
-        "declaration": true,
-        "declarationDir": "lib"
-    },
-    "exclude": ["./src/test"]
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "lib",
+    "target": "es6",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "es6"
+    ],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "outDir": "lib",
+    "baseUrl": "./src",
+    "sourceMap": true,
+  },
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "./src/test/**/*"
+  ],
+  "import/resolver": {
+    "node": {
+      "extensions": [
+        ".js",
+        ".jsx",
+        ".ts",
+        ".tsx"
+      ]
+    }
+  },
+  "compileOnSave": false
 }
