@@ -1,6 +1,7 @@
 import type {
   Pixels,
   ComputedOptions,
+  Quantizer,
 } from '../typing';
 import { Swatch } from '../color';
 import VBox from './vbox';
@@ -44,7 +45,7 @@ function generateSwatches(pq: PQueue<VBox>) {
   return swatches;
 }
 
-const MMCQ = (pixels: Pixels, opts: ComputedOptions): Array<Swatch> => {
+const MMCQ: Quantizer = (pixels: Pixels, opts: ComputedOptions): Array<Swatch> => {
   if (pixels.length === 0 || opts.colorCount < 2 || opts.colorCount > 256) {
     throw new Error('Wrong MMCQ parameters');
   }

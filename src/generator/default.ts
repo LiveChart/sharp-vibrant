@@ -300,3 +300,4 @@ const DefaultGenerator: Generator<DefaultGeneratorOptions> = (
 };
 
 export default DefaultGenerator;
+export { DefaultGeneratorOptions };

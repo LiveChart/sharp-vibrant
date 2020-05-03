@@ -18,10 +18,10 @@
     "sourceMap": true,
   },
   "include": [
-    "./src/**/*"
+    "./src"
   ],
   "exclude": [
-    "./src/test/**/*"
+    "./src/test"
   ],
   "import/resolver": {
     "node": {

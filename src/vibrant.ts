@@ -13,17 +13,17 @@ import Builder from './builder';
 
 import * as Util from './util';
 
-import * as Quantizer from './quantizer';
-import * as Generator from './generator';
+import QuantizerMMCQ from './quantizer';
+import { Default as DefaultGenerator } from './generator';
 // eslint-disable-next-line import/no-cycle
 import * as Filters from './filter';
 
 class Vibrant {
   static Builder = Builder;
 
-  static Quantizer = Quantizer;
+  static Quantizer = QuantizerMMCQ;
 
-  static Generator = Generator;
+  static Generator = DefaultGenerator;
 
   static Filter = Filters;
 
@@ -34,9 +34,9 @@ class Vibrant {
   static DefaultOpts: Partial<Options> = {
     colorCount: 64,
     quality: 5,
-    generator: Generator.Default,
+    generator: DefaultGenerator,
     ImageClass: null!,
-    quantizer: Quantizer.MMCQ,
+    quantizer: QuantizerMMCQ,
     filters: [Filters.Default],
   };
 
@@ -48,17 +48,20 @@ class Vibrant {
 
   #palette: Palette | null = null;
 
-  constructor(private _src: ImageSource, opts?: Partial<Options>) {
+  #src: ImageSource;
+
+  constructor(src: ImageSource, opts?: Partial<Options>) {
+    this.#src = src;
     this.opts = <ComputedOptions>({ ...Vibrant.DefaultOpts, ...opts });
     this.opts.combinedFilter = Filters.combineFilters(this.opts.filters)!;
   }
 
-  private process(image: Image, opts: ComputedOptions): Promise<Palette> {
-    const { quantizer, generator } = opts;
+  private process(image: Image): Promise<Palette> {
+    const { quantizer, generator } = this.opts;
 
-    return image.applyFilter(opts.combinedFilter)
-      .then((imageData) => quantizer(imageData.data, opts))
-      .then((colors) => Swatch.applyFilter(colors, opts.combinedFilter))
+    return image.applyFilter(this.opts.combinedFilter)
+      .then((imageData) => quantizer(imageData.data, this.opts))
+      .then((colors) => Swatch.applyFilter(colors, this.opts.combinedFilter))
       .then((colors) => Promise.resolve(generator!(colors)));
   }
 
@@ -68,8 +71,8 @@ class Vibrant {
 
   getPalette(cb?: Callback<Palette>): Promise<Palette> {
     const image = new this.opts.ImageClass();
-    const result = image.load(this._src, this.opts)
-      .then((image) => this.process(image, this.opts))
+    const result = image.load(this.#src, this.opts)
+      .then((loadedImage) => this.process(loadedImage))
       .then((palette) => {
         this.#palette = palette;
         image.cleanup();

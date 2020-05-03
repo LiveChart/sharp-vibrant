@@ -1,5 +1,5 @@
-import { Vec3 } from '../color';
-import { Pixels, Filter } from '../typing';
+import type { Vec3 } from '../color';
+import type { Pixels } from '../typing';
 import { getColorIndex, SIGBITS, RSHIFT } from '../util';
 
 export interface Dimension {
@@ -13,7 +13,7 @@ export interface Dimension {
 }
 
 export default class VBox {
-  static build(pixels: Pixels, shouldIgnore?: Filter): VBox {
+  static build(pixels: Pixels): VBox {
     const hn = 1 << (3 * SIGBITS);
     const hist = new Uint32Array(hn);
     let rmax: number = 0;
