@@ -127,66 +127,97 @@ function generateVariationColors(
   opts: DefaultGeneratorOptions,
 ): Palette {
   const palette: Palette = {};
+
   // mVibrantSwatch = findColor(TARGET_NORMAL_LUMA, MIN_NORMAL_LUMA, MAX_NORMAL_LUMA,
   //     TARGET_VIBRANT_SATURATION, MIN_VIBRANT_SATURATION, 1f);
-  palette.Vibrant = findColorVariation(palette, swatches, maxPopulation,
+  palette.Vibrant = findColorVariation(
+    palette,
+    swatches,
+    maxPopulation,
     opts.targetNormalLuma,
     opts.minNormalLuma,
     opts.maxNormalLuma,
     opts.targetVibrantSaturation,
     opts.minVibrantSaturation,
     1,
-    opts);
+    opts,
+  );
+
   // mLightVibrantSwatch = findColor(TARGET_LIGHT_LUMA, MIN_LIGHT_LUMA, 1f,
   //     TARGET_VIBRANT_SATURATION, MIN_VIBRANT_SATURATION, 1f);
-  palette.LightVibrant = findColorVariation(palette, swatches, maxPopulation,
+  palette.LightVibrant = findColorVariation(
+    palette,
+    swatches,
+    maxPopulation,
     opts.targetLightLuma,
     opts.minLightLuma,
     1,
     opts.targetVibrantSaturation,
     opts.minVibrantSaturation,
     1,
-    opts);
+    opts,
+  );
+
   // mDarkVibrantSwatch = findColor(TARGET_DARK_LUMA, 0f, MAX_DARK_LUMA,
   //     TARGET_VIBRANT_SATURATION, MIN_VIBRANT_SATURATION, 1f);
-  palette.DarkVibrant = findColorVariation(palette, swatches, maxPopulation,
+  palette.DarkVibrant = findColorVariation(
+    palette,
+    swatches,
+    maxPopulation,
     opts.targetDarkLuma,
     0,
     opts.maxDarkLuma,
     opts.targetVibrantSaturation,
     opts.minVibrantSaturation,
     1,
-    opts);
+    opts,
+  );
+
   // mMutedSwatch = findColor(TARGET_NORMAL_LUMA, MIN_NORMAL_LUMA, MAX_NORMAL_LUMA,
   //     TARGET_MUTED_SATURATION, 0f, MAX_MUTED_SATURATION);
-  palette.Muted = findColorVariation(palette, swatches, maxPopulation,
+  palette.Muted = findColorVariation(
+    palette,
+    swatches,
+    maxPopulation,
     opts.targetNormalLuma,
     opts.minNormalLuma,
     opts.maxNormalLuma,
     opts.targetMutesSaturation,
     0,
     opts.maxMutesSaturation,
-    opts);
+    opts,
+  );
+
   // mLightMutedColor = findColor(TARGET_LIGHT_LUMA, MIN_LIGHT_LUMA, 1f,
   //     TARGET_MUTED_SATURATION, 0f, MAX_MUTED_SATURATION);
-  palette.LightMuted = findColorVariation(palette, swatches, maxPopulation,
+  palette.LightMuted = findColorVariation(
+    palette,
+    swatches,
+    maxPopulation,
     opts.targetLightLuma,
     opts.minLightLuma,
     1,
     opts.targetMutesSaturation,
     0,
     opts.maxMutesSaturation,
-    opts);
+    opts,
+  );
+
   // mDarkMutedSwatch = findColor(TARGET_DARK_LUMA, 0f, MAX_DARK_LUMA,
   //     TARGET_MUTED_SATURATION, 0f, MAX_MUTED_SATURATION);
-  palette.DarkMuted = findColorVariation(palette, swatches, maxPopulation,
+  palette.DarkMuted = findColorVariation(
+    palette,
+    swatches,
+    maxPopulation,
     opts.targetDarkLuma,
     0,
     opts.maxDarkLuma,
     opts.targetMutesSaturation,
     0,
     opts.maxMutesSaturation,
-    opts);
+    opts,
+  );
+
   return palette;
 }
 
