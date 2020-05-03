@@ -55,9 +55,13 @@ function isAlreadySelected(palette: Palette, s: Swatch): boolean {
 }
 
 function createComparisonValue(
-  saturation: number, targetSaturation: number,
-  luma: number, targetLuma: number,
-  population: number, maxPopulation: number, opts: DefaultGeneratorOptions,
+  saturation: number,
+  targetSaturation: number,
+  luma: number,
+  targetLuma: number,
+  population: number,
+  maxPopulation: number,
+  opts: DefaultGeneratorOptions,
 ): number {
   function weightedMean(...values: number[]) {
     let sum = 0;
@@ -83,14 +87,18 @@ function createComparisonValue(
   );
 }
 
-function findColorVariation(palette: Palette, swatches: Array<Swatch>, maxPopulation: number,
+function findColorVariation(
+  palette: Palette,
+  swatches: Array<Swatch>,
+  maxPopulation: number,
   targetLuma: number,
   minLuma: number,
   maxLuma: number,
   targetSaturation: number,
   minSaturation: number,
   maxSaturation: number,
-  opts: DefaultGeneratorOptions): Swatch {
+  opts: DefaultGeneratorOptions,
+): Swatch {
   let max: Swatch | null = null;
   let maxValue = 0;
 
