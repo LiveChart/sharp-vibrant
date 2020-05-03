@@ -234,7 +234,7 @@ function generateEmptySwatches(
 ): void {
   if (palette.Vibrant === null && palette.DarkVibrant === null && palette.LightVibrant === null) {
     if (palette.DarkVibrant === null && palette.DarkMuted !== null) {
-      const [h, s, l] = withLuminance(palette.LightMuted!.hsl, opts.targetDarkLuma);
+      const [h, s, l] = withLuminance(palette.DarkMuted!.hsl, opts.targetDarkLuma);
       palette.DarkVibrant = new Swatch(hslToRgb(h, s, l), 0);
     }
 
