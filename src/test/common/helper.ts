@@ -69,14 +69,14 @@ const assertPalette = (reference: Palette, palette: Palette) => {
 }
 
 const paletteCallback = (references: any, sample: TestSample, done: Mocha.Done) =>
-  (err: Error, palette?: Palette) => {
+  (err?: Error, palette?: Palette) => {
     setTimeout(() => {
 
       expect(err, `should not throw error '${err}'`).to.be.null
       assertPalette(references, palette!)
 
       done()
-    })
+    }, 0)
   }
 
 export const testVibrant = (Vibrant: VibrantStatic, sample: TestSample, pathKey: SamplePathKey, env: 'node', builderCallback: (b: Builder) => Builder = null!) => {

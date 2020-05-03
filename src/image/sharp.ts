@@ -1,6 +1,6 @@
 import sharp from 'sharp';
-import { ImageData, ImageSource, ComputedOptions } from '../typing';
-import { ImageBase } from './base';
+import type { ImageData, ImageSource, ComputedOptions } from '../typing';
+import ImageBase from './base';
 
 export default class SharpImage extends ImageBase {
   #imageData?: ImageData;
@@ -30,14 +30,15 @@ export default class SharpImage extends ImageBase {
     return this;
   }
 
-  getPixelCount(): number {
-    return this.getImageData().width * this.getImageData().height;
+  get pixelCount(): number {
+    return this.imageData.width * this.imageData.height;
   }
 
-  getImageData(): ImageData {
+  get imageData(): ImageData {
     return this.#imageData!;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   cleanup(): void {
 
   }

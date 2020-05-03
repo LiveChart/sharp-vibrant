@@ -1,4 +1,4 @@
-import path = require('path')
+import path from 'path';
 
 import { Sample } from '../../../fixtures/sample/types'
 export const SNAPSHOT: Sample[] = require('../../../fixtures/sample/images/palettes.json')

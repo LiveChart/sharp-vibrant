@@ -3,44 +3,46 @@ export interface PQueueComparator<T> {
 }
 
 export default class PQueue<T> {
-  contents: T[]
-  private _sorted: boolean
-  private _comparator: PQueueComparator<T>
-  private _sort (): void {
-    if (!this._sorted) {
-      this.contents.sort(this._comparator)
-      this._sorted = true
+  contents: T[];
+
+  #sorted: boolean;
+
+  #comparator: PQueueComparator<T>;
+
+  private sort(): void {
+    if (!this.#sorted) {
+      this.contents.sort(this.#comparator);
+      this.#sorted = true;
     }
   }
 
-  constructor (comparator: PQueueComparator<T>) {
-    this._comparator = comparator
-    this.contents = []
-    this._sorted = false
+  constructor(comparator: PQueueComparator<T>) {
+    this.#comparator = comparator;
+    this.contents = [];
+    this.#sorted = false;
   }
 
-  push (item: T): void {
-    this.contents.push(item)
-    this._sorted = false
+  push(item: T): void {
+    this.contents.push(item);
+    this.#sorted = false;
   }
 
-  peek (index?: number): T {
-    this._sort()
-    index = typeof index === 'number' ? index : this.contents.length - 1
-    return this.contents[index]
+  peek(index?: number): T {
+    this.sort();
+    return this.contents[typeof index === 'number' ? index : this.contents.length - 1];
   }
 
-  pop (): T {
-    this._sort()
-    return this.contents.pop()!
+  pop(): T {
+    this.sort();
+    return this.contents.pop()!;
   }
 
-  size (): number {
-    return this.contents.length
+  size(): number {
+    return this.contents.length;
   }
 
-  map<U> (mapper: (item: T, index: number) => any): U[] {
-    this._sort()
-    return this.contents.map(mapper)
+  map<U>(mapper: (item: T, index: number) => any): U[] {
+    this.sort();
+    return this.contents.map(mapper);
   }
 }

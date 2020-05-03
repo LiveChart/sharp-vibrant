@@ -1,1 +1,1 @@
-export { default as MMCQ } from './mmcq'
+export { default as MMCQ } from './mmcq';

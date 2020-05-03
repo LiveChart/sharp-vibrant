@@ -1,5 +1,5 @@
-import { Palette, Swatch } from './color';
-import Builder from './builder';
+import type { Palette, Swatch } from './color';
+import type Builder from './builder';
 
 export interface VibrantStatic {
   from(src: ImageSource): Builder
@@ -21,9 +21,10 @@ export interface ImageData {
 }
 
 export interface Image {
+  readonly pixelCount: number
+  readonly imageData: ImageData
+
   load(image: ImageSource, opts: ComputedOptions): Promise<Image>
-  getPixelCount(): number
-  getImageData(): ImageData
   applyFilter(filter: Filter): Promise<ImageData>
   cleanup(): void
 }

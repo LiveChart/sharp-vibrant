@@ -8,12 +8,14 @@ import type {
 
 import { Palette, Swatch } from './color';
 
+// eslint-disable-next-line import/no-cycle
 import Builder from './builder';
 
 import * as Util from './util';
 
 import * as Quantizer from './quantizer';
 import * as Generator from './generator';
+// eslint-disable-next-line import/no-cycle
 import * as Filters from './filter';
 
 class Vibrant {

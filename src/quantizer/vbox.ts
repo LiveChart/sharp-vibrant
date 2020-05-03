@@ -16,24 +16,22 @@ export default class VBox {
   static build(pixels: Pixels, shouldIgnore?: Filter): VBox {
     const hn = 1 << (3 * SIGBITS);
     const hist = new Uint32Array(hn);
-    let rmax: number;
-    let rmin: number;
-    let gmax: number;
-    let gmin: number;
-    let bmax: number;
-    let bmin: number;
+    let rmax: number = 0;
+    let rmin: number = Number.MAX_VALUE;
+    let gmax: number = 0;
+    let gmin: number = Number.MAX_VALUE;
+    let bmax: number = 0;
+    let bmin: number = Number.MAX_VALUE;
     let r: number;
     let g: number;
     let b: number;
     let a: number;
-    rmax = gmax = bmax = 0;
-    rmin = gmin = bmin = Number.MAX_VALUE;
     const n = pixels.length / 4;
     let i = 0;
 
     while (i < n) {
       const offset = i * 4;
-      i++;
+      i += 1;
       r = pixels[offset + 0];
       g = pixels[offset + 1];
       b = pixels[offset + 2];
@@ -56,6 +54,7 @@ export default class VBox {
       if (b > bmax) bmax = b;
       if (b < bmin) bmin = b;
     }
+
     return new VBox(rmin, rmax, gmin, gmax, bmin, bmax, hist);
   }
 
@@ -83,7 +82,8 @@ export default class VBox {
   }
 
   invalidate(): void {
-    this.#volume = this.#count = -1;
+    this.#volume = -1;
+    this.#count = -1;
     this.#avg = null;
   }
 
@@ -105,9 +105,9 @@ export default class VBox {
       } = this.dimension;
       let c = 0;
 
-      for (let r = r1; r <= r2; r++) {
-        for (let g = g1; g <= g2; g++) {
-          for (let b = b1; b <= b2; b++) {
+      for (let r = r1; r <= r2; r += 1) {
+        for (let g = g1; g <= g2; g += 1) {
+          for (let b = b1; b <= b2; b += 1) {
             const index = getColorIndex(r, g, b);
             c += hist[index];
           }
@@ -134,14 +134,13 @@ export default class VBox {
       } = this.dimension;
       let ntot = 0;
       const mult = 1 << (8 - SIGBITS);
-      let rsum: number;
-      let gsum: number;
-      let bsum: number;
-      rsum = gsum = bsum = 0;
+      let rsum: number = 0;
+      let gsum: number = 0;
+      let bsum: number = 0;
 
-      for (let r = r1; r <= r2; r++) {
-        for (let g = g1; g <= g2; g++) {
-          for (let b = b1; b <= b2; b++) {
+      for (let r = r1; r <= r2; r += 1) {
+        for (let g = g1; g <= g2; g += 1) {
+          for (let b = b1; b <= b2; b += 1) {
             const index = getColorIndex(r, g, b);
             const h = hist[index];
             ntot += h;
@@ -159,9 +158,9 @@ export default class VBox {
         ];
       } else {
         this.#avg = [
-          ~~(mult * (r1 + r2 + 1) / 2),
-          ~~(mult * (g1 + g2 + 1) / 2),
-          ~~(mult * (b1 + b2 + 1) / 2),
+          ~~((mult * (r1 + r2 + 1)) / 2),
+          ~~((mult * (g1 + g2 + 1)) / 2),
+          ~~((mult * (b1 + b2 + 1)) / 2),
         ];
       }
     }
@@ -196,19 +195,18 @@ export default class VBox {
 
     const maxw = Math.max(rw, gw, bw);
     let accSum: Uint32Array | null = null;
-    let sum: number;
-    let total: number;
-    sum = total = 0;
+    let sum: number = 0;
+    let total: number = 0;
 
     let maxd: 'r' | 'g' | 'b' | null = null;
 
     if (maxw === rw) {
       maxd = 'r';
       accSum = new Uint32Array(r2 + 1);
-      for (let r = r1; r <= r2; r++) {
+      for (let r = r1; r <= r2; r += 1) {
         sum = 0;
-        for (let g = g1; g <= g2; g++) {
-          for (let b = b1; b <= b2; b++) {
+        for (let g = g1; g <= g2; g += 1) {
+          for (let b = b1; b <= b2; b += 1) {
             const index = getColorIndex(r, g, b);
             sum += hist[index];
           }
@@ -219,10 +217,10 @@ export default class VBox {
     } else if (maxw === gw) {
       maxd = 'g';
       accSum = new Uint32Array(g2 + 1);
-      for (let g = g1; g <= g2; g++) {
+      for (let g = g1; g <= g2; g += 1) {
         sum = 0;
-        for (let r = r1; r <= r2; r++) {
-          for (let b = b1; b <= b2; b++) {
+        for (let r = r1; r <= r2; r += 1) {
+          for (let b = b1; b <= b2; b += 1) {
             const index = getColorIndex(r, g, b);
             sum += hist[index];
           }
@@ -233,10 +231,10 @@ export default class VBox {
     } else {
       maxd = 'b';
       accSum = new Uint32Array(b2 + 1);
-      for (let b = b1; b <= b2; b++) {
+      for (let b = b1; b <= b2; b += 1) {
         sum = 0;
-        for (let r = r1; r <= r2; r++) {
-          for (let g = g1; g <= g2; g++) {
+        for (let r = r1; r <= r2; r += 1) {
+          for (let g = g1; g <= g2; g += 1) {
             const index = getColorIndex(r, g, b);
             sum += hist[index];
           }
@@ -248,7 +246,7 @@ export default class VBox {
 
     let splitPoint = -1;
     const reverseSum = new Uint32Array(accSum.length);
-    for (let i = 0; i < accSum.length; i++) {
+    for (let i = 0; i < accSum.length; i += 1) {
       const d = accSum[i];
       if (splitPoint < 0 && d > total / 2) splitPoint = i;
       reverseSum[i] = total - d;
@@ -273,10 +271,10 @@ export default class VBox {
         d2 = Math.min(vbox.dimension[dim2], d2);
       }
 
-      while (!accSum![d2]) d2++;
+      while (!accSum![d2]) d2 += 1;
 
       let c2 = reverseSum[d2];
-      while (!c2 && accSum![d2 - 1]) c2 = reverseSum[--d2];
+      while (!c2 && accSum![d2 - 1]) c2 = reverseSum[d2 -= 1];
 
       vbox1.dimension[dim2] = d2;
       vbox2.dimension[dim1] = d2 + 1;

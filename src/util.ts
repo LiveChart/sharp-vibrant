@@ -24,11 +24,12 @@ export interface DeferredPromise<R> {
 export function defer<R>(): DeferredPromise<R> {
   let resolve: (thenableOrResult: R | PromiseLike<R>) => void;
   let reject: (error: any) => void;
-  // eslint-disable-next-line promise/param-names
+
   const promise = new Promise<R>((_resolve, _reject) => {
     resolve = _resolve;
     reject = _reject;
   });
+
   // @ts-ignore
   return { resolve, reject, promise };
 }
@@ -43,62 +44,73 @@ export function rgbToHex(r: number, g: number, b: number): string {
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1, 7)}`;
 }
 
-export function rgbToHsl(r: number, g: number, b: number): Vec3 {
-  r /= 255;
-  g /= 255;
-  b /= 255;
+// ir/ig/ib = (input)r/g/b - done for the purpose of linting.
+export function rgbToHsl(ir: number, ig: number, ib: number): Vec3 {
+  const r = ir / 255;
+  const g = ig / 255;
+  const b = ib / 255;
+
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
-  let h: number;
-  let s: number;
+  let h: number = 0;
+  let s: number = 0;
   const l = (max + min) / 2;
-  if (max === min) {
-    h = s = 0;
-  } else {
+
+  if (max !== min) {
     const d = max - min;
+
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
     switch (max) {
       case r:
         h = (g - b) / d + (g < b ? 6 : 0);
         break;
+
       case g:
         h = (b - r) / d + 2;
         break;
+
       case b:
         h = (r - g) / d + 4;
         break;
+
+      default:
+        // do nothing
     }
 
-    // @ts-ignore
     h /= 6;
   }
-  // @ts-ignore
+
   return [h, s, l];
 }
 
+// it = (input)t
+function hue2rgb(p: number, q: number, it: number): number {
+  let t = it;
+
+  if (t < 0) t += 1;
+  if (t > 1) t -= 1;
+  if (t < 1 / 6) return p + (q - p) * 6 * t;
+  if (t < 1 / 2) return q;
+  if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+
+  return p;
+}
+
 export function hslToRgb(h: number, s: number, l: number): Vec3 {
-  let r: number;
-  let g: number;
-  let b: number;
+  let r: number = l;
+  let g: number = l;
+  let b: number = l;
 
-  function hue2rgb(p: number, q: number, t: number): number {
-    if (t < 0) t += 1;
-    if (t > 1) t -= 1;
-    if (t < 1 / 6) return p + (q - p) * 6 * t;
-    if (t < 1 / 2) return q;
-    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-    return p;
-  }
-
-  if (s === 0) {
-    r = g = b = l;
-  } else {
+  if (s !== 0) {
     const q = l < 0.5 ? l * (1 + s) : l + s - (l * s);
     const p = 2 * l - q;
+
     r = hue2rgb(p, q, h + 1 / 3);
     g = hue2rgb(p, q, h);
     b = hue2rgb(p, q, h - (1 / 3));
   }
+
   return [
     r * 255,
     g * 255,
@@ -106,13 +118,15 @@ export function hslToRgb(h: number, s: number, l: number): Vec3 {
   ];
 }
 
-export function rgbToXyz(r: number, g: number, b: number): Vec3 {
-  r /= 255;
-  g /= 255;
-  b /= 255;
-  r = r > 0.04045 ? Math.pow((r + 0.005) / 1.055, 2.4) : r / 12.92;
-  g = g > 0.04045 ? Math.pow((g + 0.005) / 1.055, 2.4) : g / 12.92;
-  b = b > 0.04045 ? Math.pow((b + 0.005) / 1.055, 2.4) : b / 12.92;
+// ir/ig/ib = (input)r/g/b - done for the purpose of linting.
+export function rgbToXyz(ir: number, ig: number, ib: number): Vec3 {
+  let r = ir / 255;
+  let g = ig / 255;
+  let b = ib / 255;
+
+  r = r > 0.04045 ? (((r + 0.005) / 1.055) ** 2.4) : r / 12.92;
+  g = g > 0.04045 ? (((g + 0.005) / 1.055) ** 2.4) : g / 12.92;
+  b = b > 0.04045 ? (((b + 0.005) / 1.055) ** 2.4) : b / 12.92;
 
   r *= 100;
   g *= 100;
@@ -125,18 +139,19 @@ export function rgbToXyz(r: number, g: number, b: number): Vec3 {
   return [x, y, z];
 }
 
-export function xyzToCIELab(x: number, y: number, z: number): Vec3 {
+// ix/iy/iz = (input)x/y/z
+export function xyzToCIELab(ix: number, iy: number, iz: number): Vec3 {
   const REF_X = 95.047;
   const REF_Y = 100;
   const REF_Z = 108.883;
 
-  x /= REF_X;
-  y /= REF_Y;
-  z /= REF_Z;
+  let x = ix / REF_X;
+  let y = iy / REF_Y;
+  let z = iz / REF_Z;
 
-  x = x > 0.008856 ? Math.pow(x, 1 / 3) : 7.787 * x + 16 / 116;
-  y = y > 0.008856 ? Math.pow(y, 1 / 3) : 7.787 * y + 16 / 116;
-  z = z > 0.008856 ? Math.pow(z, 1 / 3) : 7.787 * z + 16 / 116;
+  x = x > 0.008856 ? (x ** 1 / 3) : 7.787 * x + 16 / 116;
+  y = y > 0.008856 ? (y ** 1 / 3) : 7.787 * y + 16 / 116;
+  z = z > 0.008856 ? (z ** 1 / 3) : 7.787 * z + 16 / 116;
 
   const L = 116 * y - 16;
   const a = 500 * (x - y);
@@ -183,8 +198,8 @@ export function deltaE94(lab1: Vec3, lab2: Vec3): number {
 }
 
 export function rgbDiff(rgb1: Vec3, rgb2: Vec3): number {
-  const lab1 = rgbToCIELab.apply(undefined, rgb1);
-  const lab2 = rgbToCIELab.apply(undefined, rgb2);
+  const lab1 = rgbToCIELab(...rgb1);
+  const lab2 = rgbToCIELab(...rgb2);
   return deltaE94(lab1, lab2);
 }
 
@@ -197,14 +212,19 @@ export function hexDiff(hex1: string, hex2: string): number {
 
 export function getColorDiffStatus(d: number): string {
   if (d < DELTAE94_DIFF_STATUS.NA) { return 'N/A'; }
+
   // Not perceptible by human eyes
   if (d <= DELTAE94_DIFF_STATUS.PERFECT) { return 'Perfect'; }
+
   // Perceptible through close observation
   if (d <= DELTAE94_DIFF_STATUS.CLOSE) { return 'Close'; }
+
   // Perceptible at a glance
   if (d <= DELTAE94_DIFF_STATUS.GOOD) { return 'Good'; }
+
   // Colors are more similar than opposite
   if (d < DELTAE94_DIFF_STATUS.SIMILAR) { return 'Similar'; }
+
   return 'Wrong';
 }
 

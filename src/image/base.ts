@@ -1,29 +1,41 @@
-import { Filter, Image, ImageData, ImageSource, ComputedOptions } from '../typing'
+import type {
+  Filter, Image, ImageData, ImageSource, ComputedOptions,
+} from '../typing';
 
-export abstract class ImageBase implements Image {
-  abstract load(image: ImageSource, opts: ComputedOptions): Promise<ImageBase>
-  abstract getPixelCount(): number
-  abstract getImageData(): ImageData
-  abstract cleanup(): void
+abstract class ImageBase implements Image {
+  abstract load(image: ImageSource, opts: ComputedOptions): Promise<ImageBase>;
 
-  applyFilter (filter: Filter): Promise<ImageData> {
-    let imageData = this.getImageData()
+  abstract readonly pixelCount: number;
+
+  abstract readonly imageData: ImageData;
+
+  abstract cleanup(): void;
+
+  applyFilter(filter: Filter): Promise<ImageData> {
+    const { imageData } = this;
 
     if (typeof filter === 'function') {
-      let pixels = imageData.data
-      let n = pixels.length / 4
-      let offset, r, g, b, a
-      for (let i = 0; i < n; i++) {
-        offset = i * 4
-        r = pixels[offset + 0]
-        g = pixels[offset + 1]
-        b = pixels[offset + 2]
-        a = pixels[offset + 3]
+      const pixels = imageData.data;
+      const n = pixels.length / 4;
+      let offset;
+      let r;
+      let g;
+      let b;
+      let a;
+
+      for (let i = 0; i < n; i += 1) {
+        offset = i * 4;
+        r = pixels[offset + 0];
+        g = pixels[offset + 1];
+        b = pixels[offset + 2];
+        a = pixels[offset + 3];
         // Mark ignored color
-        if (!filter(r, g, b, a)) pixels[offset + 3] = 0
+        if (!filter(r, g, b, a)) pixels[offset + 3] = 0;
       }
     }
 
-    return Promise.resolve(imageData)
+    return Promise.resolve(imageData);
   }
 }
+
+export default ImageBase;

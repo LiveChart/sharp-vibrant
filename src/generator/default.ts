@@ -1,4 +1,5 @@
-import { Swatch, Palette } from '../color';
+/* eslint-disable no-param-reassign */
+import { Swatch, Palette, Vec3 } from '../color';
 import { Generator } from '../typing';
 import { hslToRgb } from '../util';
 
@@ -36,17 +37,15 @@ const DefaultOpts: DefaultGeneratorOptions = {
   weightPopulation: 0.5,
 };
 
-function _findMaxPopulation(swatches: Array<Swatch>): number {
+function findMaxPopulation(swatches: Array<Swatch>): number {
   let p = 0;
 
-  swatches.forEach((s) => {
-    p = Math.max(p, s.getPopulation());
-  });
+  swatches.forEach((s) => { p = Math.max(p, s.population); });
 
   return p;
 }
 
-function _isAlreadySelected(palette: Palette, s: Swatch): boolean {
+function isAlreadySelected(palette: Palette, s: Swatch): boolean {
   return palette.Vibrant === s
     || palette.DarkVibrant === s
     || palette.LightVibrant === s
@@ -55,7 +54,7 @@ function _isAlreadySelected(palette: Palette, s: Swatch): boolean {
     || palette.LightMuted === s;
 }
 
-function _createComparisonValue(
+function createComparisonValue(
   saturation: number, targetSaturation: number,
   luma: number, targetLuma: number,
   population: number, maxPopulation: number, opts: DefaultGeneratorOptions,
@@ -84,7 +83,7 @@ function _createComparisonValue(
   );
 }
 
-function _findColorVariation(palette: Palette, swatches: Array<Swatch>, maxPopulation: number,
+function findColorVariation(palette: Palette, swatches: Array<Swatch>, maxPopulation: number,
   targetLuma: number,
   minLuma: number,
   maxLuma: number,
@@ -96,13 +95,21 @@ function _findColorVariation(palette: Palette, swatches: Array<Swatch>, maxPopul
   let maxValue = 0;
 
   swatches.forEach((swatch) => {
-    const [, s, l] = swatch.getHsl();
+    const [, s, l] = swatch.hsl;
 
     if (s >= minSaturation && s <= maxSaturation
       && l >= minLuma && l <= maxLuma
-      && !_isAlreadySelected(palette, swatch)
+      && !isAlreadySelected(palette, swatch)
     ) {
-      const value = _createComparisonValue(s, targetSaturation, l, targetLuma, swatch.getPopulation(), maxPopulation, opts);
+      const value = createComparisonValue(
+        s,
+        targetSaturation,
+        l,
+        targetLuma,
+        swatch.population,
+        maxPopulation,
+        opts,
+      );
 
       if (max === null || value > maxValue) {
         max = swatch;
@@ -114,11 +121,15 @@ function _findColorVariation(palette: Palette, swatches: Array<Swatch>, maxPopul
   return max!;
 }
 
-function _generateVariationColors(swatches: Array<Swatch>, maxPopulation: number, opts: DefaultGeneratorOptions): Palette {
+function generateVariationColors(
+  swatches: Array<Swatch>,
+  maxPopulation: number,
+  opts: DefaultGeneratorOptions,
+): Palette {
   const palette: Palette = {};
   // mVibrantSwatch = findColor(TARGET_NORMAL_LUMA, MIN_NORMAL_LUMA, MAX_NORMAL_LUMA,
   //     TARGET_VIBRANT_SATURATION, MIN_VIBRANT_SATURATION, 1f);
-  palette.Vibrant = _findColorVariation(palette, swatches, maxPopulation,
+  palette.Vibrant = findColorVariation(palette, swatches, maxPopulation,
     opts.targetNormalLuma,
     opts.minNormalLuma,
     opts.maxNormalLuma,
@@ -128,7 +139,7 @@ function _generateVariationColors(swatches: Array<Swatch>, maxPopulation: number
     opts);
   // mLightVibrantSwatch = findColor(TARGET_LIGHT_LUMA, MIN_LIGHT_LUMA, 1f,
   //     TARGET_VIBRANT_SATURATION, MIN_VIBRANT_SATURATION, 1f);
-  palette.LightVibrant = _findColorVariation(palette, swatches, maxPopulation,
+  palette.LightVibrant = findColorVariation(palette, swatches, maxPopulation,
     opts.targetLightLuma,
     opts.minLightLuma,
     1,
@@ -138,7 +149,7 @@ function _generateVariationColors(swatches: Array<Swatch>, maxPopulation: number
     opts);
   // mDarkVibrantSwatch = findColor(TARGET_DARK_LUMA, 0f, MAX_DARK_LUMA,
   //     TARGET_VIBRANT_SATURATION, MIN_VIBRANT_SATURATION, 1f);
-  palette.DarkVibrant = _findColorVariation(palette, swatches, maxPopulation,
+  palette.DarkVibrant = findColorVariation(palette, swatches, maxPopulation,
     opts.targetDarkLuma,
     0,
     opts.maxDarkLuma,
@@ -148,7 +159,7 @@ function _generateVariationColors(swatches: Array<Swatch>, maxPopulation: number
     opts);
   // mMutedSwatch = findColor(TARGET_NORMAL_LUMA, MIN_NORMAL_LUMA, MAX_NORMAL_LUMA,
   //     TARGET_MUTED_SATURATION, 0f, MAX_MUTED_SATURATION);
-  palette.Muted = _findColorVariation(palette, swatches, maxPopulation,
+  palette.Muted = findColorVariation(palette, swatches, maxPopulation,
     opts.targetNormalLuma,
     opts.minNormalLuma,
     opts.maxNormalLuma,
@@ -158,7 +169,7 @@ function _generateVariationColors(swatches: Array<Swatch>, maxPopulation: number
     opts);
   // mLightMutedColor = findColor(TARGET_LIGHT_LUMA, MIN_LIGHT_LUMA, 1f,
   //     TARGET_MUTED_SATURATION, 0f, MAX_MUTED_SATURATION);
-  palette.LightMuted = _findColorVariation(palette, swatches, maxPopulation,
+  palette.LightMuted = findColorVariation(palette, swatches, maxPopulation,
     opts.targetLightLuma,
     opts.minLightLuma,
     1,
@@ -168,7 +179,7 @@ function _generateVariationColors(swatches: Array<Swatch>, maxPopulation: number
     opts);
   // mDarkMutedSwatch = findColor(TARGET_DARK_LUMA, 0f, MAX_DARK_LUMA,
   //     TARGET_MUTED_SATURATION, 0f, MAX_MUTED_SATURATION);
-  palette.DarkMuted = _findColorVariation(palette, swatches, maxPopulation,
+  palette.DarkMuted = findColorVariation(palette, swatches, maxPopulation,
     opts.targetDarkLuma,
     0,
     opts.maxDarkLuma,
@@ -179,61 +190,83 @@ function _generateVariationColors(swatches: Array<Swatch>, maxPopulation: number
   return palette;
 }
 
-function _generateEmptySwatches(palette: Palette, maxPopulation: number, opts: DefaultGeneratorOptions): void {
+function withLuminance(hsl: Vec3, l: number): Vec3 {
+  const [h, s] = hsl;
+
+  return [h, s, l];
+}
+
+function generateEmptySwatches(
+  palette: Palette,
+  maxPopulation: number,
+  opts: DefaultGeneratorOptions,
+): void {
   if (palette.Vibrant === null && palette.DarkVibrant === null && palette.LightVibrant === null) {
     if (palette.DarkVibrant === null && palette.DarkMuted !== null) {
-      let [h, s, l] = palette.DarkMuted!.getHsl();
-      l = opts.targetDarkLuma;
+      const [h, s, l] = withLuminance(palette.LightMuted!.hsl, opts.targetDarkLuma);
+      // let [h, s, l] = palette.LightMuted!.hsl;
+      // l = opts.targetDarkLuma;
       palette.DarkVibrant = new Swatch(hslToRgb(h, s, l), 0);
     }
     if (palette.LightVibrant === null && palette.LightMuted !== null) {
-      let [h, s, l] = palette.LightMuted!.getHsl();
-      l = opts.targetDarkLuma;
+      const [h, s, l] = withLuminance(palette.LightMuted!.hsl, opts.targetDarkLuma);
+      // let [h, s, l] = palette.LightMuted!.hsl;
+      // l = opts.targetDarkLuma;
       palette.DarkVibrant = new Swatch(hslToRgb(h, s, l), 0);
     }
   }
   if (palette.Vibrant === null && palette.DarkVibrant !== null) {
-    let [h, s, l] = palette.DarkVibrant!.getHsl();
-    l = opts.targetNormalLuma;
+    const [h, s, l] = withLuminance(palette.DarkVibrant!.hsl, opts.targetNormalLuma);
+    // let [h, s, l] = palette.DarkVibrant!.hsl;
+    // l = opts.targetNormalLuma;
     palette.Vibrant = new Swatch(hslToRgb(h, s, l), 0);
   } else if (palette.Vibrant === null && palette.LightVibrant !== null) {
-    let [h, s, l] = palette.LightVibrant!.getHsl();
-    l = opts.targetNormalLuma;
+    const [h, s, l] = withLuminance(palette.LightVibrant!.hsl, opts.targetNormalLuma);
+    // let [h, s, l] = palette.LightVibrant!.hsl;
+    // l = opts.targetNormalLuma;
     palette.Vibrant = new Swatch(hslToRgb(h, s, l), 0);
   }
   if (palette.DarkVibrant === null && palette.Vibrant !== null) {
-    let [h, s, l] = palette.Vibrant!.getHsl();
-    l = opts.targetDarkLuma;
+    const [h, s, l] = withLuminance(palette.Vibrant!.hsl, opts.targetDarkLuma);
+    // let [h, s, l] = palette.Vibrant!.hsl;
+    // l = opts.targetDarkLuma;
     palette.DarkVibrant = new Swatch(hslToRgb(h, s, l), 0);
   }
   if (palette.LightVibrant === null && palette.Vibrant !== null) {
-    let [h, s, l] = palette.Vibrant!.getHsl();
-    l = opts.targetLightLuma;
+    const [h, s, l] = withLuminance(palette.Vibrant!.hsl, opts.targetLightLuma);
+    // let [h, s, l] = palette.Vibrant!.hsl;
+    // l = opts.targetLightLuma;
     palette.LightVibrant = new Swatch(hslToRgb(h, s, l), 0);
   }
   if (palette.Muted === null && palette.Vibrant !== null) {
-    let [h, s, l] = palette.Vibrant!.getHsl();
-    l = opts.targetMutesSaturation;
+    const [h, s, l] = withLuminance(palette.Vibrant!.hsl, opts.targetMutesSaturation);
+    // let [h, s, l] = palette.Vibrant!.hsl;
+    // l = opts.targetMutesSaturation;
     palette.Muted = new Swatch(hslToRgb(h, s, l), 0);
   }
   if (palette.DarkMuted === null && palette.DarkVibrant !== null) {
-    let [h, s, l] = palette.DarkVibrant!.getHsl();
-    l = opts.targetMutesSaturation;
+    const [h, s, l] = withLuminance(palette.DarkVibrant!.hsl, opts.targetMutesSaturation);
+    // let [h, s, l] = palette.DarkVibrant!.hsl;
+    // l = opts.targetMutesSaturation;
     palette.DarkMuted = new Swatch(hslToRgb(h, s, l), 0);
   }
   if (palette.LightMuted === null && palette.LightVibrant !== null) {
-    let [h, s, l] = palette.LightVibrant!.getHsl();
-    l = opts.targetMutesSaturation;
+    const [h, s, l] = withLuminance(palette.LightVibrant!.hsl, opts.targetMutesSaturation);
+    // let [h, s, l] = palette.LightVibrant!.hsl;
+    // l = opts.targetMutesSaturation;
     palette.LightMuted = new Swatch(hslToRgb(h, s, l), 0);
   }
 }
 
-const DefaultGenerator: Generator = (swatches: Array<Swatch>, opts?: DefaultGeneratorOptions): Palette => {
+const DefaultGenerator: Generator = (
+  swatches: Array<Swatch>,
+  opts?: DefaultGeneratorOptions,
+): Palette => {
   const optsWithDefaults = <DefaultGeneratorOptions>({ ...DefaultOpts, ...opts });
-  const maxPopulation = _findMaxPopulation(swatches);
+  const maxPopulation = findMaxPopulation(swatches);
 
-  const palette = _generateVariationColors(swatches, maxPopulation, optsWithDefaults);
-  _generateEmptySwatches(palette, maxPopulation, optsWithDefaults);
+  const palette = generateVariationColors(swatches, maxPopulation, optsWithDefaults);
+  generateEmptySwatches(palette, maxPopulation, optsWithDefaults);
 
   return palette;
 };

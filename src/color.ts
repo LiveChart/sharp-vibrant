@@ -15,9 +15,14 @@ export interface Palette {
 
 export class Swatch {
   static applyFilter(colors: Swatch[], f: Filter): Swatch[] {
-    return typeof f === 'function'
-      ? [].filter.call(colors, ({ r, g, b }: { r: number, g: number, b: number }) => f(r, g, b, 255))
-      : colors;
+    if (typeof f !== 'function') {
+      return colors;
+    }
+
+    return [].filter.call(
+      colors,
+      ({ r, g, b }: { r: number, g: number, b: number }) => f(r, g, b, 255),
+    );
   }
 
   #rgb: Vec3;
@@ -29,6 +34,10 @@ export class Swatch {
   #yiq?: number;
 
   #hex?: string;
+
+  #titleTextColor?: string;
+
+  #bodyTextColor?: string;
 
   constructor(rgb: Vec3, population: number) {
     this.#rgb = rgb;
@@ -45,9 +54,9 @@ export class Swatch {
 
   get hsl() {
     if (!this.#hsl) {
-      const [r, g, b] = this.#rgb;
-      this.#hsl = rgbToHsl(r, g, b);
+      this.#hsl = rgbToHsl(...this.#rgb);
     }
+
     return this.#hsl;
   }
 
@@ -68,49 +77,28 @@ export class Swatch {
     };
   }
 
-  // TODO: deprecate internally, use property instead
-  getRgb(): Vec3 { return this.#rgb; }
-
-  // TODO: deprecate internally, use property instead
-  getHsl(): Vec3 { return this.hsl; }
-
-  // TODO: deprecate internally, use property instead
-  getPopulation(): number { return this.#population; }
-
-  // TODO: deprecate internally, use property instead
-  getHex(): string { return this.hex; }
-
   private getYiq(): number {
     if (!this.#yiq) {
       const rgb = this.#rgb;
       this.#yiq = (rgb[0] * 299 + rgb[1] * 587 + rgb[2] * 114) / 1000;
     }
+
     return this.#yiq;
   }
 
-  #titleTextColor?: string;
-
-  #bodyTextColor?: string;
-
-  get titleTextColor() {
+  get titleTextColor(): string {
     if (!this.#titleTextColor) {
       this.#titleTextColor = this.getYiq() < 200 ? '#fff' : '#000';
     }
+
     return this.#titleTextColor;
   }
 
-  get bodyTextColor() {
+  get bodyTextColor(): string {
     if (!this.#bodyTextColor) {
       this.#bodyTextColor = this.getYiq() < 150 ? '#fff' : '#000';
     }
+
     return this.#bodyTextColor;
-  }
-
-  getTitleTextColor(): string {
-    return this.titleTextColor;
-  }
-
-  getBodyTextColor(): string {
-    return this.bodyTextColor;
   }
 }

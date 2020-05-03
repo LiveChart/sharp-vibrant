@@ -1,84 +1,88 @@
-import {
+import type {
   Callback,
   ImageClass,
   ImageSource,
   Options,
   Filter,
   Quantizer,
-  Generator
-} from './typing'
+  Generator,
+} from './typing';
 
-import { Palette } from './color'
-import Vibrant from './vibrant'
+import type { Palette } from './color';
+// eslint-disable-next-line import/no-cycle
+import Vibrant from './vibrant';
 
 export default class Builder {
-  private _src: ImageSource
-  private _opts: Partial<Options>
+  #src: ImageSource;
+
+  #opts: Partial<Options>;
+
   constructor(src: ImageSource, opts: Partial<Options> = {}) {
-    this._src = src
-    this._opts = opts
+    this.#src = src;
+    this.#opts = opts;
 
     if (Vibrant.DefaultOpts.filters) {
-      this._opts.filters = [...Vibrant.DefaultOpts.filters]
+      this.#opts.filters = [...Vibrant.DefaultOpts.filters];
     } else {
-      this._opts.filters = []
+      this.#opts.filters = [];
     }
   }
 
   maxColorCount(n: number): Builder {
-    this._opts.colorCount = n
-    return this
+    this.#opts.colorCount = n;
+    return this;
   }
 
   maxDimension(d: number): Builder {
-    this._opts.maxDimension = d
-    return this
+    this.#opts.maxDimension = d;
+    return this;
   }
 
   addFilter(f: Filter): Builder {
-    this._opts.filters!.push(f)
-    return this
+    this.#opts.filters!.push(f);
+    return this;
   }
 
   removeFilter(f: Filter): Builder {
-    let i = this._opts.filters!.indexOf(f)
-    if (i > 0) this._opts.filters!.splice(i)
-    return this
+    const i = this.#opts.filters!.indexOf(f);
+    if (i > 0) this.#opts.filters!.splice(i);
+    return this;
   }
 
   clearFilters(): Builder {
-    this._opts.filters = []
-    return this
+    this.#opts.filters = [];
+    return this;
   }
 
   quality(q: number): Builder {
-    this._opts.quality = q
-    return this
+    this.#opts.quality = q;
+    return this;
   }
 
   useImageClass(imageClass: ImageClass): Builder {
-    this._opts.ImageClass = imageClass
-    return this
+    this.#opts.ImageClass = imageClass;
+    return this;
   }
 
   useGenerator(generator: Generator): Builder {
-    this._opts.generator = generator
-    return this
+    this.#opts.generator = generator;
+    return this;
   }
 
   useQuantizer(quantizer: Quantizer): Builder {
-    this._opts.quantizer = quantizer
-    return this
+    this.#opts.quantizer = quantizer;
+    return this;
   }
 
   build(): Vibrant {
-    return new Vibrant(this._src, this._opts)
+    return new Vibrant(this.#src, this.#opts);
   }
 
   getPalette(cb?: Callback<Palette>): Promise<Palette> {
-    return this.build().getPalette(cb)
+    return this.build().getPalette(cb);
   }
+
   getSwatches(cb?: Callback<Palette>): Promise<Palette> {
-    return this.build().getPalette(cb)
+    return this.build().getPalette(cb);
   }
 }
