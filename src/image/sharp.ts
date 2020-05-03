@@ -30,10 +30,6 @@ export default class SharpImage extends ImageBase {
     return this;
   }
 
-  update (imageData: ImageData): void {
-
-  }
-
   getPixelCount (): number {
     return this._imageData.width * this._imageData.height
   }

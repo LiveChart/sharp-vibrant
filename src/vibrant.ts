@@ -1,10 +1,9 @@
-import {
+import type {
   Image,
   ImageSource,
   Options,
   ComputedOptions,
-  Callback,
-  Filter
+  Callback
 } from './typing'
 
 import { Palette, Swatch } from './color'

@@ -1,6 +1,4 @@
 import {
-  Quantizer,
-  Filter,
   Pixels,
   ComputedOptions
 } from '../typing'
@@ -39,8 +37,6 @@ const MMCQ = (pixels: Pixels, opts: ComputedOptions): Array<Swatch> => {
   }
 
   let vbox = VBox.build(pixels)
-  let hist = vbox.hist
-  let colorCount = Object.keys(hist).length
   let pq = new PQueue<VBox>((a, b) => a.count() - b.count())
 
   pq.push(vbox)
@@ -64,7 +60,6 @@ function generateSwatches (pq: PQueue<VBox>) {
   while (pq.size()) {
     let v = pq.pop()
     let color = v.avg()
-    let [r, g, b] = color
     swatches.push(new Swatch(color, v.count()))
   }
   return swatches

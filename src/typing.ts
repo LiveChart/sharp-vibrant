@@ -22,7 +22,6 @@ export interface ImageData {
 
 export interface Image {
   load(image: ImageSource, opts: ComputedOptions): Promise<Image>
-  update(imageData: ImageData): void
   getPixelCount(): number
   getImageData(): ImageData
   applyFilter(filter: Filter): Promise<ImageData>

@@ -2,7 +2,6 @@ import { Filter, Image, ImageData, ImageSource, ComputedOptions } from '../typin
 
 export abstract class ImageBase implements Image {
   abstract load(image: ImageSource, opts: ComputedOptions): Promise<ImageBase>
-  abstract update(imageData: ImageData): void
   abstract getPixelCount(): number
   abstract getImageData(): ImageData
   abstract cleanup(): void
