@@ -64,7 +64,7 @@ export default class Builder {
     return this;
   }
 
-  useGenerator(generator: Generator): Builder {
+  useGenerator(generator: Generator<any>): Builder {
     this.#opts.generator = generator;
     return this;
   }
