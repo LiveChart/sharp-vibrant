@@ -1,12 +1,14 @@
-import { Palette } from '../../src/color';
-import { Sharp } from 'sharp';
+import type { Palette } from '../../src/color';
+import type { Sharp } from 'sharp';
+import type { ImageDimensions } from '../../src/typing';
 
 export interface Sample {
-  name: string;
-  sharp: Sharp;
-  filePath: string;
+  name: string
+  sharp: Sharp
+  filePath: string
+  dimensions: ImageDimensions
   palettes: {
-    [env: string]: Palette;
+    [env: string]: Palette
   };
 }
 

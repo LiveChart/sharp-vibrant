@@ -1,3 +1,4 @@
+import type { Sharp } from 'sharp';
 import type { Palette, Swatch } from './color';
 import type Builder from './builder';
 
@@ -11,17 +12,28 @@ export interface Callback<T> {
 
 export type ImageCallback = Callback<Image>;
 
-export type ImageSource = string | Buffer;
+export type ImageSource = string | Buffer | Sharp;
 
-export type Pixels = Uint8ClampedArray | Buffer;
-export interface ImageData {
-  data: Pixels,
-  width: number,
-  height: number
+export interface ImageDimensions {
+  readonly width: number
+  readonly height: number
 }
 
-export interface Image {
+export interface ImagePixelInfo {
   readonly pixelCount: number
+}
+
+export type Pixels = Uint8ClampedArray | Buffer;
+export interface ImageData extends ImageDimensions {
+  data: Pixels
+}
+
+export interface PaletteResult extends ImagePixelInfo {
+  readonly imageDimensions: ImageDimensions
+  readonly palette: Palette
+}
+
+export interface Image extends ImageDimensions, ImagePixelInfo {
   readonly imageData: ImageData
 
   load(image: ImageSource, opts: ComputedOptions): Promise<Image>

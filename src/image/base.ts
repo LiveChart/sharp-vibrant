@@ -9,6 +9,10 @@ abstract class ImageBase implements Image {
 
   abstract readonly imageData: ImageData;
 
+  abstract readonly width: number;
+
+  abstract readonly height: number;
+
   abstract cleanup(): void;
 
   applyFilter(filter: Filter): Promise<ImageData> {

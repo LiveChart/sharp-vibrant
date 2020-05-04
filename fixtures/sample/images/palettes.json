@@ -1,6 +1,10 @@
 [
   {
     "name": "1.jpg",
+    "dimensions": {
+      "width": 640,
+      "height": 426
+    },
     "palettes": {
       "node": {
         "Vibrant": {
@@ -56,6 +60,10 @@
   },
   {
     "name": "2.jpg",
+    "dimensions": {
+      "width": 640,
+      "height": 426
+    },
     "palettes": {
       "node": {
         "Vibrant": {
@@ -111,6 +119,10 @@
   },
   {
     "name": "3.jpg",
+    "dimensions": {
+      "width": 640,
+      "height": 426
+    },
     "palettes": {
       "node": {
         "Vibrant": {
@@ -166,6 +178,10 @@
   },
   {
     "name": "4.jpg",
+    "dimensions": {
+      "width": 640,
+      "height": 426
+    },
     "palettes": {
       "node": {
         "Vibrant": {

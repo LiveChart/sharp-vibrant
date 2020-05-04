@@ -6,9 +6,9 @@ import type {
   Filter,
   Quantizer,
   Generator,
+  PaletteResult,
 } from './typing';
 
-import type { Palette } from './color';
 // eslint-disable-next-line import/no-cycle
 import Vibrant from './vibrant';
 
@@ -78,11 +78,7 @@ export default class Builder {
     return new Vibrant(this.#src, this.#opts);
   }
 
-  getPalette(cb?: Callback<Palette>): Promise<Palette> {
-    return this.build().getPalette(cb);
-  }
-
-  getSwatches(cb?: Callback<Palette>): Promise<Palette> {
+  getPalette(cb?: Callback<PaletteResult>): Promise<PaletteResult> {
     return this.build().getPalette(cb);
   }
 }

@@ -1,23 +1,30 @@
 /* eslint-env mocha */
 import { expect } from 'chai'
-import { VibrantStatic } from '../../typing'
+import type { PaletteResult, VibrantStatic, ImageDimensions } from '../../typing'
 import Builder from '../../builder'
 import { Palette, Swatch } from '../../color'
 import util = require('../../util')
-import {
+import type {
   TestSample, SamplePathKey
 } from './data'
 
 import { table, getBorderCharacters } from 'table'
 
+type Env = 'node'
 
 const TABLE_OPTS = {
   border: getBorderCharacters('void')
 }
 
-
 const displayColorDiffTable = (diff: string[][]) => {
   console.log(table(diff, TABLE_OPTS))
+}
+
+const assertDimensions = (reference: ImageDimensions, dimensions: ImageDimensions) => {
+  expect(dimensions, 'dimensions should be returned').not.to.be.null
+
+  expect(dimensions.width, `width is not correct`).to.eq(reference.width)
+  expect(dimensions.height, `height is not correct`).to.eq(reference.height)
 }
 
 const assertPalette = (reference: Palette, palette: Palette) => {
@@ -32,7 +39,7 @@ const assertPalette = (reference: Palette, palette: Palette) => {
 
     if (expected === null) {
       if (actual !== null) {
-        console.warn(`WARN: ${name} color was not expected. Got ${actual.getHex()}`)
+        console.warn(`WARN: ${name} color was not expected. Got ${actual.hex}`)
       }
     } else {
       expect(actual, `${name} color was expected`).not.to.be.null
@@ -68,37 +75,50 @@ const assertPalette = (reference: Palette, palette: Palette) => {
     .to.equal(0)
 }
 
-const paletteCallback = (references: any, sample: TestSample, done: Mocha.Done) =>
-  (err?: Error, palette?: Palette) => {
+function assertResult(env: Env, sample: TestSample, result: PaletteResult) {
+  assertDimensions(sample.dimensions, result.imageDimensions)
+  assertPalette(sample.palettes[env], result.palette)
+}
+
+const paletteCallback = (env: Env, sample: TestSample, done: Mocha.Done) =>
+  (err?: Error, result?: PaletteResult) => {
     setTimeout(() => {
 
       expect(err, `should not throw error '${err}'`).to.be.null
-      assertPalette(references, palette!)
+      assertResult(env, sample, result!)
 
       done()
     }, 0)
   }
 
-export const testVibrant = (Vibrant: VibrantStatic, sample: TestSample, pathKey: SamplePathKey, env: 'node', builderCallback: (b: Builder) => Builder = null!) => {
-  return (done: Mocha.Done) => {
-    let builder = Vibrant.from(sample[pathKey])
-      .quality(1)
+export const testVibrant = (
+  Vibrant: VibrantStatic,
+  sample: TestSample,
+  pathKey: SamplePathKey,
+  env: Env,
+  builderCallback: (b: Builder) => Builder = null!
+) => (done: Mocha.Done) => {
+  let builder = Vibrant.from(sample[pathKey]).quality(1)
 
-    if (typeof builderCallback === 'function') builder = builderCallback(builder)
-
-    builder.getPalette(paletteCallback(sample.palettes[env], sample, done))
+  if (typeof builderCallback === 'function') {
+    builder = builderCallback(builder)
   }
+
+  builder.getPalette(paletteCallback(env, sample, done))
 }
 
-
-export const testVibrantAsPromised = (Vibrant: VibrantStatic, sample: TestSample, pathKey: SamplePathKey, env: 'node', builderCallback: (b: Builder) => Builder = null!) => {
+export const testVibrantAsPromised = (
+  Vibrant: VibrantStatic,
+  sample: TestSample,
+  pathKey: SamplePathKey,
+  env: Env,
+  builderCallback: (b: Builder) => Builder = null!
+) => {
   return () => {
-    let builder = Vibrant.from(sample[pathKey])
-      .quality(1)
+    let builder = Vibrant.from(sample[pathKey]).quality(1)
 
     if (typeof builderCallback === 'function') builder = builderCallback(builder)
 
-    return builder.getPalette()
-      .then(palette => assertPalette(sample.palettes[env], palette))
+    return builder.getPalette().then(result => assertResult(env, sample, result))
   }
 }

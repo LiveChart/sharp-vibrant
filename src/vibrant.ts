@@ -4,6 +4,7 @@ import type {
   Options,
   ComputedOptions,
   Callback,
+  PaletteResult,
 } from './typing';
 
 import { Palette, Swatch } from './color';
@@ -46,8 +47,6 @@ class Vibrant {
 
   opts: ComputedOptions;
 
-  #palette: Palette | null = null;
-
   #src: ImageSource;
 
   constructor(src: ImageSource, opts?: Partial<Options>) {
@@ -65,23 +64,30 @@ class Vibrant {
       .then((colors) => Promise.resolve(generator!(colors)));
   }
 
-  palette(): Palette | null {
-    return this.#palette;
-  }
-
-  getPalette(cb?: Callback<Palette>): Promise<Palette> {
+  getPalette(cb?: Callback<PaletteResult>): Promise<PaletteResult> {
     const image = new this.opts.ImageClass();
     const result = image.load(this.#src, this.opts)
       .then((loadedImage) => this.process(loadedImage))
       .then((palette) => {
-        this.#palette = palette;
+        const paletteResult: PaletteResult = {
+          pixelCount: image.pixelCount,
+          imageDimensions: {
+            width: image.width,
+            height: image.height,
+          },
+          palette,
+        };
         image.cleanup();
-        return palette;
+        return paletteResult;
       }, (err) => {
         image.cleanup();
         throw err;
       });
-    if (cb) result.then((palette) => cb(null!, palette), (err) => cb(err));
+
+    if (cb) {
+      result.then((palette) => cb(null!, palette), (err) => cb(err));
+    }
+
     return result;
   }
 }

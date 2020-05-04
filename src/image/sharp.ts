@@ -45,6 +45,14 @@ export default class SharpImage extends ImageBase {
     return this.#imageData!;
   }
 
+  get width(): number {
+    return this.imageData.width;
+  }
+
+  get height(): number {
+    return this.imageData.height;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   cleanup(): void {
 

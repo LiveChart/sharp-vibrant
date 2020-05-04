@@ -111,7 +111,7 @@ export interface Filter {
 }
 ```
 
-#### `getPalette(cb?: Callback<Palette>): Promise<Palette>`
+##### `getPalette(cb?: Callback<PaletteResult>): Promise<PaletteResult>`
 
 Name | Description
 ---- | -----------------
@@ -125,10 +125,26 @@ export interface Callback<T> {
 }
 ```
 
-#### `getSwatches(cb?: Callback<Palette>): Promise<Palette>`
-Alias of `getPalette`.
+##### `ImageDimensions`
 
-### `Vibrant.Builder`
+```ts
+interface ImageDimensions {
+    readonly width: number
+    readonly height: number
+}
+```
+
+##### `PaletteResult`
+
+```ts
+interface PaletteResult {
+    readonly pixelCount: number
+    readonly imageDimensions: ImageDimensions
+    readonly palette: Palette
+}
+```
+
+#### `Vibrant.Builder`
 Helper class for change configurations and create a `Vibrant` instance. Methods of a `Builder` instance can be chained like:
 
 ```ts
@@ -137,7 +153,7 @@ Vibrant.from(src)
   .clearFilters()
   // ...
   .getPalette()
-  .then((palette) => {})
+  .then((paletteResult) => {})
 ```
 
 #### `constructor(src: ImageSource, opts: Partial<Options>)`
@@ -173,11 +189,8 @@ Sets `opts.generator` to `generator`. Returns this `Builder` instance.
 #### `build(): Vibrant`
 Builds and returns a `Vibrant` instance as configured.
 
-#### `getPalette(cb?: Callback<Palette>): Promise<Palette>`
+#### `getPalette(cb?: Callback<PaletteResult>): Promise<PaletteResult>`
 Builds a `Vibrant` instance as configured and calls its `getPalette` method.
-
-#### `getSwatches(cb? Callback<Palette>): Promise<Palette>`
-Alias of `getPalette`.
 
 ### `Vibrant.Swatch`
 Represents a color swatch generated from an image's palette.

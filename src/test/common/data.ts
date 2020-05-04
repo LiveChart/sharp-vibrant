@@ -8,7 +8,7 @@ export interface TestSample extends Sample {
   relativeUrl: string
 }
 
-export type SamplePathKey = Exclude<keyof TestSample, 'palettes'>
+export type SamplePathKey = Exclude<keyof TestSample, 'palettes' | 'dimensions'>
 
 export const SAMPLES: TestSample[] = SNAPSHOT.map((s) => Object.assign(s, {
   sharp: sharp(path.join(__dirname, '../../../fixtures/sample/images/', s.name)),
