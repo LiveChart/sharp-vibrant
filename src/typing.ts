@@ -1,6 +1,6 @@
-import type { Sharp } from 'sharp';
 import type { Palette, Swatch } from './color';
 import type Builder from './builder';
+import { type Sharp } from 'sharp';
 
 export interface VibrantStatic {
   from(src: ImageSource): Builder
