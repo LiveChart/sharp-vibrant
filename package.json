@@ -5,9 +5,9 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "dependencies": {
-    "@types/node": "^10.11.7",
-    "@types/sharp": "^0.25.0",
-    "sharp": "^0.25.2"
+    "@types/node": "^25.5.0",
+    "@types/sharp": "^0.32.0",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@types/chai": "^4.0.5",
@@ -26,9 +26,9 @@
     "mocha": "^5.2.0",
     "rimraf": "^2.6.1",
     "table": "^5.1.0",
-    "ts-loader": "^5.2.1",
-    "ts-node": "^7.0.1",
-    "typescript": "^3.6.3"
+    "ts-loader": "^9.5.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
   },
   "scripts": {
     "clean": "yarn run clean:node",
