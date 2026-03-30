@@ -2,26 +2,16 @@
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "lib",
-    "target": "es6",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+    "target": "es2020",
+    "module": "Node16",
+    "moduleResolution": "Node16",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "lib": [
-      "es6"
-    ],
-    "module": "es2022",
-    "moduleResolution": "bundler",
     "strict": true,
     "rootDir": "./src",
     "outDir": "lib",
     "sourceMap": true
   },
-  "include": [
-    "./src"
-  ],
-  "exclude": [
-    "./src/test"
-  ],
-  "compileOnSave": false
+  "include": ["./src"],
+  "exclude": ["./src/test"]
 }
