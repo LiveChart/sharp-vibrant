@@ -3,4 +3,4 @@ import SharpImage from './image/sharp';
 
 Vibrant.DefaultOpts.ImageClass = SharpImage;
 
-export = Vibrant;
+export default Vibrant;
